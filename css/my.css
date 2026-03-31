@@ -1,0 +1,968 @@
+@font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+
+body   { font-size:14px; color:#666666; letter-spacinbody {
+
+}g:-1px;  }
+table  { font-size:15px; color:#666666; letter-spacing:-1px; text-decoration: none; text-align:center; vertical-align:middle !important; }
+
+a:link         { color: #666666; text-decoration: none;}
+a:visited      { color: #666666; text-decoration: none;}
+
+.mywordwrap {
+  word-wrap: break-word;
+  max-width:50px;
+}
+
+.myfs12     { font-size:14px !important; letter-spacing:-1px; }
+.myfs13     { font-size:15px !important; letter-spacing:-1px; }
+.myfs14     { font-size:16px !important; letter-spacing:-1px; }
+.myfs15     { font-size:17px !important; letter-spacing:-1px; }
+
+.mybutton-gray           { font-size:14px;  letter-spacing:-1px; border:1px solid #cdcdcd; color:#999999 !important; padding:2px 5px 2px 5px;}
+.mybutton-gray:hover     { font-size:14px;  letter-spacing:-1px; border:1px solid #cdcdcd; color:#666666 !important; background-color:#eeeeee; padding:2px 5px 2px 5px;}
+.mybutton-blue           { font-size:14px;  letter-spacing:-1px; border:1px solid #0099ff; color: #0099ff !important; padding:2px 5px 2px 5px;}
+.mybutton-blue:hover     { font-size:14px;  letter-spacing:-1px; border:1px solid #0099ff; color: #0099ff !important; background-color:#e3f4ff;  padding:2px 5px 2px 5px;}
+.mybutton-red            { font-size:14px;  letter-spacing:-1px; border:1px solid #fb7b09; color: #fb7b09 !important;  padding:2px 5px 2px 5px;}
+.mybutton-red:hover      { font-size:14px;  letter-spacing:-1px; border:1px solid #fb7b09; color: #fb7b09 !important;; background-color:#feedde;  padding:2px 5px 2px 5px;}
+
+.mymargin3 { margin:3px 0px 3px 0px; }
+
+.mycolor1 { background-color:#212529 !important; color:white !important; }
+.mycolor2 { background-color: aliceblue !important; }
+.mycolor3 { background-color: lightyellow !important; }
+
+.menu01 { height:30px; }
+.menu01 ul li  { padding:3px; font-size:15px; list-style-type:none; float:left; margin-left:20px; text-align:center; vertical-align:middle }
+
+.mythumb_box {
+    font-size : 14px;
+    text-align:center;
+    border: 1px solid lightgray;
+    padding:3px;
+    margin:5px 0px 5px 0px;
+}
+
+.mythumb_image {
+    height: 150px;
+    max-width: 100%;
+    margin-bottom:3px
+}
+
+.mythumb_text {
+    border: 1px solid lightgray;
+    background-color:lightsteelblue;
+    padding:3px;
+}
+
+.mynopic { background-color:#eeeeee; width:98%; height:140px; border:1px solid #cccccc; border-radius:5px; margin:3px }
+
+.zoom_image { overflow:hidden; }
+.zoom_image img {
+    transform:scale(1);
+    transition:all 0.5s;
+}
+.zoom_image:hover img {
+    transform:scale(1.2);
+}
+
+.zoom_a { overflow:hidden; }
+.zoom_a a {
+    color:#666666;
+}
+.zoom_a:hover a {
+    color:#f49300;
+    transform:scale(1.1);
+}
+
+.card-img-top {
+    height:25rem;
+    object-fit:cover;
+}
+
+html, body {
+    font-family: 'DungGeunMo', serif !important;
+    background-color:#f1f1f1 !important;
+}
+
+/* 4910 앱 설치 배너 글로우 효과 */
+#appBanner .flex-grow-1 p {
+    color: #ffffff;
+    transition: text-shadow 0.3s ease;
+}
+#appBanner .flex-grow-1 p:hover {
+    text-shadow: 0 0 8px rgba(189, 254, 1, 0.8),
+                 0 0 4px rgba(189, 254, 1, 0.6);
+}
+
+.glow-button {
+transition: box-shadow 0.3s ease;
+}
+.glow-button:hover {
+box-shadow: 0 0 8px rgba(189,254,1,0.8),
+            0 0 4px rgba(189,254,1,0.6);
+}
+.nav-glow .nav-link {
+  transition: text-shadow 0.3s ease;
+}
+.nav-glow .nav-link:hover {
+  text-shadow: 0 0 8px rgba(189,254,1,0.8),
+               0 0 4px rgba(189,254,1,0.6);
+}
+/* Fixed Disappearing Scrolling Header */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
+header.up {
+  transform: translateY(-100%);
+}
+header.down {
+  transform: translateY(0);
+}
+main {
+  padding-top: 70px;
+}
+.card-body .card-title a {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+.d-inline-flex .form-control:focus {
+  border-color: rgba(189,254,1,0.8) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 0.2rem rgba(189,254,1,0.8) !important;
+}
+/* find_text 입력칸 포커스 시 테두리·그림자 색상 변경 */
+input[name="find_text"]:focus {
+  border-color: rgba(189,254,1,0.8) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 0.05rem rgba(189,254,1,0.8) !important;
+}
+
+.mypage123 {
+border-color: #212529 !important
+} 
+.mypage1234:hover {
+    box-shadow: 0 0 0 0.1rem rgba(189,254,1,0.8) !important;
+    color: rgba(189,254,1,1) !important;
+}
+.mypage1234 {
+border-color: #212529 !important
+}
+
+.glitch-wrapper {
+   width: 100%;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+}
+
+.glitch {
+   position: relative;
+   font-size: 40px;
+   color: #bdfe01;
+   z-index: 1;
+   box-shadow: rgb(0, 0, 0) !important;
+}
+
+.glitch:before,
+.glitch:after {
+   display: block;
+   content: attr(data-text);
+   position: absolute;
+   top: 0;
+   left: 0;
+   opacity: 0.8;
+}
+
+.glitch:before {
+   animation: glitch-it 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+   color: #00FFFF;
+   z-index: -1;
+}
+
+.glitch:after {
+   animation: glitch-it 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+   color: #FF00FF;
+   z-index: -2;
+}
+
+@keyframes glitch-it {
+   0% {
+      transform: translate(0);
+   }
+   20% {
+      transform: translate(-2px, 2px);
+   }
+   40% {
+      transform: translate(-2px, -2px);
+   }
+   60% {
+      transform: translate(2px, 2px);
+   }
+   80% {
+      transform: translate(2px, -2px);
+   }
+   to {
+      transform: translate(0);
+   }
+}
+
+/* Shine effect */
+.shine-wrapper {
+  position: relative;
+  overflow: hidden; /* 컨테이너 밖으로 나가는 슬라이스 숨김 */
+}
+
+.shine-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  display: block;
+  width: 50%;
+  height: 100%;
+  background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 100%);
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 100%);
+  -webkit-transform: skewX(-25deg);
+          transform: skewX(-25deg);
+  z-index: 2;
+}
+
+.shine-wrapper:hover::before {
+  -webkit-animation: shine 0.75s forwards;
+          animation: shine 0.75s forwards;
+}
+
+@-webkit-keyframes shine {
+  to {
+    left: 125%;
+  }
+}
+@keyframes shine {
+  to {
+    left: 125%;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html, body {
+  min-height: 100%;
+  height: 100%;
+  font-family: helvetica neue, helvetica, arial, sans-serif;
+}
+
+.content {
+  min-height: 100%;
+  height: 100%;
+  background: #fff;
+  position: relative;
+  z-index: 0;
+}
+.content h1 {
+  padding: 75px 0 30px 0;
+  text-align: center;
+  font-size: 30px;
+  line-height: 30px;
+}
+.content .buttons {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+.content .buttons .button {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  background: #efefef;
+  padding: 10px 15px;
+  margin: 10px;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  color: #333;
+  font-weight: bold;
+}
+.content .buttons .button:hover {
+  color: #fff;
+  background: #009bd5;
+}
+
+/* modal style */
+html.modal-active,
+body.modal-active {
+  overflow: hidden;
+}
+#modal-container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: table;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  transform: scale(0);
+  color: #ffffff;
+  /* 강한 다중 그림자 */
+  text-shadow:
+    /* 가장 바깥쪽 뿌연 광환 */
+    0 0 40px rgba(0, 0, 0, 0.8),
+    /* 중간 두꺼운 그림자 */
+    0 0 20px rgba(0, 0, 0, 0.9),
+    /* 글자 주변 어두운 윤곽 */
+    2px 2px 2px rgba(0, 0, 0, 0.9),
+    /* 살짝 퍼지는 내부 그림자 */
+    -2px -2px 2px rgba(0, 0, 0, 0.9);
+}
+
+#modal-container .modal-background {
+  display: table-cell;
+  background: rgba(0, 0, 0, .8);
+  text-align: center;
+  vertical-align: middle;
+}
+#modal-container .modal-background .modal {
+  padding: 50px;
+  display: inline-block;
+  border-radius: 3px;
+  position: relative;
+    background: transparent !important;
+}
+#modal-container .modal-background .modal h2 {
+  font-size: 25px;
+  line-height: 25px;
+  margin-bottom: 15px;
+  
+}
+#modal-container .modal-background .modal p {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+
+/*
+ * ------------------------------
+ * Unfolding Animation
+ * ------------------------------
+ */
+#modal-container.one {
+  /*transform: scaleX(0) scaleY(1);*/
+  animation: unfoldIn 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.one .modal-background .modal {
+  /* 초기 display: none 처럼 크기를 0 으로 하여 보여주지 않음*/
+  transform: scale(0);
+  /* 0.5 초 동안 애니메이션을 실행, 단 0.8초 지연시켜 0.8초 후에 애니메이션을 실행 */
+  animation: zoomIn .5s .8s  cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.one.out {
+  transform: scale(1);
+  animation: unfoldOut 1s .3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.one.out .modal-background .modal {
+  animation: zoomOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+/* Dimmed showing */
+@keyframes unfoldIn {
+  0% {
+    transform: scaleX(0) scaleY(0.005);
+  }
+  50% {
+    /* 0.5 초간 세로 크기는 작은상태로 가로 너비만 확대  */
+    transform: scaleX(1) scaleY(0.005);
+  }
+  100% {
+    /* 0.5 초간 세로 크기를 확대 */
+    transform: scaleY(1) scaleX(1);
+  }
+}
+/* Show modal content  */
+@keyframes zoomIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+/* Hide modal content */
+@keyframes zoomOut {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
+  }
+}
+/* Dimmed hiding */
+@keyframes unfoldOut {
+  0% {
+    transform: scale(1)
+  }
+  50% {
+    transform: scaleX(1) scaleY(0.005);
+  }
+  100% {
+    transform: scaleX(0) scaleY(0.005);
+  }
+}
+
+
+/*
+ * ------------------------------
+ * Revealing Animation
+ * ------------------------------
+ */
+#modal-container.two {
+  transform: scale(1);
+}
+#modal-container.two .modal-background {
+  background: transparent;
+  animation: fadeIn .5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.two .modal-background .modal {
+  /* 콘텐츠를 초기에 보여주지 않음 */
+  opacity: 0;
+  animation: scaleUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+.content.two {
+  /* 콘텐츠 크기를 줄임 */
+  animation: scaleBack 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.two.out {
+  /* 전체 모달 컨테이너를 숨김 처리(다른 애니메이션이 모두 끝난 0.5초 후에 처리하기 위해 0.5초 지연시킴 */
+  animation: quickScaleDown 0s .5s linear forwards;
+}
+#modal-container.two.out .modal-background {
+  animation: fadeOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.two.out .modal-background .modal {
+  animation: scaleDown 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+.content.two.out {
+  animation: scaleForward 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+/* Dimmed showing */
+@keyframes fadeIn {
+  0% {
+    background: transparent;
+  }
+  100% {
+    background: rgba(0, 0, 0, .7);
+  }
+}
+/* Show modal content from bottom to top */
+@keyframes scaleUp {
+  0% {
+    /* 모달 콘텐츠를 하단에 위치시킴 */
+    transform: scale(.8) translateY(1000px);
+    opacity: 0;
+  }
+  100% {
+    /* 모달 콘텐츠를 본래 위치로 돌려놓음 */
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+/* Shrink content */
+@keyframes scaleBack {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(.8);
+  }
+}
+/* Hide modal container*/
+@keyframes quickScaleDown {
+  0% {
+    transform: scale(1);
+  }
+  99.9% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+/* Dimmed hiding */
+@keyframes fadeOut {
+  0% {
+    background: rgba(0, 0, 0, .7);
+  }
+  100% {
+    background: transparent;
+  }
+}
+/* modal content from top to bottom */
+@keyframes scaleDown {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(.8) translateY(1000px);
+    opacity: 0;
+  }
+}
+
+@keyframes scaleBack {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(.85);
+  }
+}
+@keyframes scaleForward {
+  0% {
+    transform: scale(0.85);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/*
+ * ------------------------------
+ * Uncovering Animation
+ * ------------------------------
+ */
+#modal-container.three {
+  z-index: 0;
+  transform: scale(1);
+}
+#modal-container.three .modal-background {
+  background: rgba(0, 0, 0, .9);
+}
+#modal-container.three .modal-background .modal {
+  animation: moveUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+.content.three {
+  z-index: 1;
+  animation: slideUpLarge 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.three.out .modal-background .modal {
+  animation: moveDown 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+.content.three.out {
+  animation: slideDownLarge 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+/* Show Modal content*/
+@keyframes moveUp {
+  /* 하단에서 */
+  0% {
+    transform: translateY(200px);
+  }
+  /* 중앙으로 위치 */
+  100% {
+    transform: translateY(0);
+  }
+}
+/* Slide up Content */
+@keyframes slideUpLarge {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+/* Hide Modal content */
+@keyframes moveDown {
+  /* 중앙에 있는 모달 콘텐츠를 */
+  0% {
+    transform: translateY(0);
+  }
+  /* 하단으로 위치 */
+  100% {
+    transform: translateY(200px);
+  }
+}
+/* Slide down content */
+@keyframes slideDownLarge {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/*
+ * ------------------------------
+ * Blow Up Animation
+ * ------------------------------
+ */
+#modal-container.four {
+  z-index: 0;
+  transform: scale(1);
+}
+#modal-container.four .modal-background {
+  background: rgba(0, 0, 0, 0.9);
+}
+#modal-container.four .modal-background .modal {
+  animation: blowUpModal 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+.content.four {
+  z-index: 1;
+  animation: blowUpContent 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.four.out .modal-background .modal {
+  animation: blowUpModalTwo 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+.content.four.out {
+  animation: blowUpContentTwo 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+/* Show modal content */
+@keyframes blowUpModal {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+/* Hide content */
+@keyframes blowUpContent {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  /* 원본 크기에서 2배로 커지면서 투명도를 서서히 낮춤 */
+  99.9% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  /* 마지막에 숨김 처리 */
+  100% {
+    transform: scale(0);
+  }
+}
+/* Hide modal content */
+@keyframes blowUpModalTwo {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+/* Show content */
+@keyframes blowUpContentTwo {
+  0% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/*
+ * ------------------------------
+ * Meep Meep Animation
+ * ------------------------------
+ */
+#modal-container.five {
+  transform: scale(1);
+}
+#modal-container.five .modal-background {
+  background: transparent;
+  animation: fadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.five .modal-background .modal {
+  transform: translateX(-1500px);
+  animation: roadRunnerIn 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.five.out {
+  animation: quickScaleDown 0s .5s linear forwards;
+}
+#modal-container.five.out .modal-background {
+  animation: fadeOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.five.out .modal-background .modal {
+  animation: roadRunnerOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+/* 모달 콘텐츠 반동 효과로 나타나기 */
+@keyframes roadRunnerIn {
+  0% {
+    transform: translateX(-1500px) skewX(30deg) scaleX(1.3);
+  }
+  70% {
+    transform: translateX(50px) skewX(0deg) scaleX(0.9);
+  }
+  100% {
+    transform: translateX(0px) skewX(0deg) scaleX(1);
+  }
+}
+/* 모달 콘텐츠 반동 효과로 숨기기 */
+@keyframes roadRunnerOut {
+  0% {
+    transform: translateX(0px) skewX(0deg) scaleX(1);
+  }
+  30% {
+    transform: translateX(-100px) skewX(-5deg) scaleX(0.9);
+  }
+  100% {
+    transform: translateX(1500px) skewX(30deg) scaleX(1.3);
+  }
+}
+
+/*
+ * ------------------------------
+ * James Bond Animation
+ * ------------------------------
+ */
+#modal-container.six {
+  transform: scale(1);
+}
+#modal-container.six .modal-background {
+  background: transparent;
+  animation: fadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.six .modal-background .modal {
+  /* 초기 모달 콘텐츠 크기 및 라운드 정의 */
+  width: 200px;
+  height: 200px;
+  border-radius: 100%;
+  overflow: hidden;
+  animation: JamesBond 1.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.six .modal-background .modal h2,
+#modal-container.six .modal-background .modal p {
+  /* 콘텐츠 내용 숨김 */
+  opacity: 0;
+  position: relative;
+  /* 원형 모달이 본래 모양을 완성된 후 1.4 지연후에 보여줌 */
+  animation: modalContentFadeIn .5s 1.4s linear forwards;
+}
+#modal-container.six.out {
+  animation: slowFade .5s 1.5s linear forwards;
+}
+#modal-container.six.out .modal-background {
+  background-color: rgba(0, 0, 0, 0.7);
+  animation: fadeToRed 2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.six.out .modal-background .modal {
+  border-radius: 3px;
+  height: 162px;
+  width: 227px;
+  animation: killShot 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.six.out .modal-background .modal h2,
+#modal-container.six.out .modal-background .modal p {
+  animation: modalContentFadeOut 0.5s 0.5 cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+/* Show modal content : round shape */
+@keyframes JamesBond {
+  0% {
+    transform: translateX(1000px);
+  }
+  80% {
+    transform: translateX(0px);
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+  }
+  90% {
+    border-radius: 3px;
+    width: 340px;
+    height: 240px;
+  }
+  100% {
+    border-radius: 3px;
+    width: 300px;
+    height: 200px;
+  }
+}
+/* 모달 콘텐츠 내의 요소 효과 처리 */
+@keyframes modalContentFadeIn {
+  0% {
+    opacity: 0;
+    top: -20px;
+  }
+  100% {
+    opacity: 1;
+    top: 0;
+  }
+}
+/* 전체 모달 컨테이너 숨김처리 */
+@keyframes slowFade {
+  0% {
+    opacity: 1;
+  }
+  99.9% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+/* 박스 그림자를 이용한 효과 */
+@keyframes fadeToRed {
+  0% {
+    box-shadow: inset 0 0 0 rgba(201, 24, 24, 0.8);
+  }
+  100% {
+    /* y 축 박스 그림자를 위에서부터 아래로 내리는 효과 */
+    box-shadow: inset 0 2000px 0 rgba(201, 24, 24, 0.8);
+  }
+}
+/* 모달 콘텐츠 비스듬히 하단으로 떨어뜨림 */
+@keyframes killShot {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    /* 하단으로 회전시켜 떨어뜨림 */
+    transform: translateY(400px) rotate(45deg);
+    opacity: 0;
+  }
+}
+/* 모달 콘텐츠가 떨어질 때 효과처리 */
+@keyframes modalContentFadeOut {
+  0% {
+    opacity: 1;
+    top: 0;
+  }
+  100% {
+    opacity: 0;
+    top: -20px;
+  }
+}
+
+/* my.css 맨 아래에 추가 */
+#modal-container .btn-close {
+  /* SVG 색상 반전 + 화이트 글로우 */
+  opacity: 1 !important;
+  filter:
+    invert(1)
+    drop-shadow(0 0 1px rgba(255,255,255,1))
+    drop-shadow(0 0 3px rgba(255,255,255,0.8))
+    drop-shadow(0 0 5px rgba(255,255,255,0.6))
+    !important;
+}
+
+/* 기본 커서 */
+* {
+  cursor: url('../images/cursor_default.png') 2 2, auto !important;
+}
+
+/* pointer 역할을 하는 모든 요소 */
+a,
+button,
+label,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="file"],
+select,
+summary,
+[class*="btn"],
+[role="button"] {
+  cursor: url('../images/cursor_pointer.png') 2 2, pointer !important;
+}
+
+/* 텍스트 입력 영역: I-beam */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+textarea {
+  cursor: url('../images/cursor_text.png') 2 2, text !important;
+}
+
+/* 확대 가능 영역 (예시 클래스 zoom-in) */
+.zoom-in,
+.zoom-in * {
+  cursor: url('../images/cursor_zoom_in.png') 2 2, zoom-in !important;
+}
+
+
+/* 축소 가능 영역 (예시 클래스 zoom-out) */
+.zoom-out,
+.zoom-out * {
+  cursor: url('../images/cursor_zoom_out.png') 2 2, zoom-out !important;
+}
+
+.carousel-indicators button {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  color: #fff;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+  line-height: 1;
+  padding: 0;
+  margin: 0 4px;
+  transition: transform 0.2s ease;
+}
+
+.carousel-indicators button.active {
+  color: #00f0ff;
+  text-shadow:
+    0 0 8px rgba(0, 240, 255, 0.8),
+    2px 2px 6px rgba(0, 0, 0, 0.7);
+  transform: scale(1.1);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-size: 100% 100%;
+  width: 3rem;
+  height: 3rem;
+  filter: drop-shadow(2px 2px 6px rgba(0, 0, 0, 0.7));
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+/* hover 시 glow 효과 추가 */
+.carousel-control-prev:hover .carousel-control-prev-icon,
+.carousel-control-next:hover .carousel-control-next-icon {
+  filter:
+    drop-shadow(2px 2px 6px rgba(0, 0, 0, 0.7))
+    drop-shadow(0 0 8px rgba(0, 240, 255, 0.9));
+  transform: scale(1.02);
+}
+
+
+      @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        20%,60% { transform: translateX(-6px); }
+        40%,80% { transform: translateX(6px); }
+      }
+      .shake {
+        animation: shake 0.5s ease;
+      }
+      .error-msg {
+        color: #dc3545;
+        font-size: .9rem;
+        margin-top: .25rem;
+        white-space: nowrap;
+      }

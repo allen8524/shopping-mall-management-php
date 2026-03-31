@@ -1,0 +1,29 @@
+/* 날씨 기능 전용 스타일 */
+
+.location-select label {
+  font-weight: bold;
+}
+
+#weatherDetails p {
+  margin: 0.5em 0;
+  display: flex;
+  align-items: center;
+}
+
+#weatherDetails p::before {
+  content: "🌡️";
+  margin-right: 0.5em;
+}
+
+/* 반응형 */
+@media (max-width: 600px) {
+  .location-select {
+    flex-direction: column;
+  }
+  .location-select label,
+  .location-select select,
+  .location-select button {
+    width: 100%;
+    margin-bottom: 0.5em;
+  }
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>판매관리</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS 링크 -->
+    <link href="css/test.css" rel="stylesheet"> <!-- 사용자 정의 CSS 링크 -->
+    <script src="js/jquery-3.7.1.min.js"></script> <!-- jQuery 라이브러리 링크 -->
+    <script src="js/bootstrap.bundle.min.js"></script> <!-- Bootstrap JS 링크 -->
+    <script>
+        function resetForm() {
+            document.forms['form1'].reset(); // 폼 초기화
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- 네비게이션 바 -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Admin</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="#">회원</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">제품</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">주문</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">기타</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">Q&A</a></li>
+                                <li><a class="dropdown-item" href="#">FAQ</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">옵션</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <a href="#" class="btn btn-sm btn-outline-secondary btn-dark">Goto Shop</a>
+                </div>
+            </div>
+        </nav>
+        <br>
+        <!-- 경고 메시지 -->
+        <div class="alert mycolor1" role="alert">회원</div>
+
+        <!-- 회원 등록 폼 -->
+        <form name="form1" method="post" action="">
+            <table class="table table-bordered table-sm mymargin5">
+                <tr>
+                    <td width="20%" class="mycolor2"> 번호</td>
+                    <td width="80%" align="left">1</td>
+                </tr>
+                <tr>
+                    <td class="mycolor2"><font color="red">*</font> 이름</td>
+                    <td align="left">
+                        <div class="fd-inline-flex">
+                            <input type="text" name="name" class="form-control form-control-sm" placeholder="">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="mycolor2"><font color="red">*</font> 아이디</td>
+                    <td align="left">
+                        <div class="fd-inline-flex">
+                            <input type="text" name="username" class="form-control form-control-sm" placeholder="">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="mycolor2"><font color="red">*</font> 암호</td>
+                    <td align="left">
+                        <div class="fd-inline-flex">
+                            <input type="password" name="password" class="form-control form-control-sm" placeholder="">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="mycolor2"><font color="red">*</font> 전화</td>
+                    <td align="left">
+                        <div class="fd-inline-flex" style="display: flex; align-items: center;">
+                            <input type="tel" name="phone1" class="form-control form-control-sm" placeholder="">
+                            <span style="margin: 0 5px;">-</span>
+                            <input type="tel" name="phone2" class="form-control form-control-sm" placeholder="">
+                            <span style="margin: 0 5px;">-</span>
+                            <input type="tel" name="phone3" class="form-control form-control-sm" placeholder="">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="mycolor2"><font color="red">*</font> 등급</td>
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <form>
+                                <input type="radio" id="employee" name="role" value="employee">
+                                <label for="employee">직원</label>
+                                <input type="radio" id="manager" name="role" value="manager">
+                                <label for="manager">관리자</label>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                
+            </table>
+            
+        </form>
+
+        <!-- 버튼 그룹 -->
+        <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: center;">
+            <a href="#" class="btn btn-sm mycolor1">수정</a>
+            <a href="#" class="btn btn-sm mycolor1" onclick="resetForm()">삭제</a>
+            <a href="#" class="btn btn-sm mycolor1">저장</a>
+            <a href="#" class="btn btn-sm mycolor1">이전 화면</a>
+        </div>
+    </div>
+</body>
+</html>
