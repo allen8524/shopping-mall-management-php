@@ -33,7 +33,8 @@
 - Server Environment: Apache + PHP + MySQL(MariaDB) 로컬 환경(예: XAMPP/Laragon 등 환경에 맞게 구성)
 
 ## 프로젝트 구조
-- `common.php`: DB 연결, 공통 옵션 배열, 공통 페이징 함수(`mypagination`)
+- `common.php`: DB 연결 설정 로딩, 공통 옵션 배열, 공통 페이징 함수(`mypagination`)
+- `config.php.example`: 로컬 DB/관리자 계정 설정 예시 파일(`config.php`로 복사해 사용, 커밋 제외)
 - `index.html`, `main.php`, `main_top.php`, `main_bottom.php`: 사용자 메인 진입 및 공통 레이아웃
 - `menu.php`, `product.php`, `product_search.php`: 상품 목록/상세/검색
 - `cart.php`, `cart_edit.php`: 쿠키 기반 장바구니 조회/수정
@@ -74,6 +75,7 @@
 - 주문번호는 기존 형식인 `yymmdd + 4자리 순번`을 유지합니다.
 - 주문 공통 정보는 `jumun`(주문 마스터)에 1건으로 저장하고, 각 상품/수량/옵션/금액은 `jumuns`(주문 상세)에 반복 저장합니다.
 - 주문 마스터와 주문 상세 저장은 하나의 트랜잭션으로 묶어 일부만 저장되는 상황을 줄였습니다.
+- 주문번호 조회, 상품 조회, 주문 마스터/상세 저장용 Prepared Statement 생성 실패 시 경고로 이어지지 않도록 예외 처리 후 rollback합니다.
 - 장바구니 쿠키(`cart`, `n_cart`)는 주문 저장이 성공적으로 commit된 뒤에만 삭제합니다.
 - 주문 상세에는 옵션 ID(`opts_id1~3`)도 함께 저장해 옵션 조합을 추적할 수 있습니다.
 
@@ -92,6 +94,7 @@
 - 관리자 페이지 접근은 `$_SESSION["admin_id"]`, `$_SESSION["admin_login"]` 값을 기준으로 확인합니다.
 - 상품 상세 ID, 카테고리/정렬 값, 관리자 검색/주문 상태 변경 등 주요 입력값에 정수 캐스팅, 허용값 검증, 문자열 escape 또는 Prepared Statement를 일부 적용했습니다.
 - 주문 저장 시 장바구니 쿠키 값을 그대로 신뢰하지 않고 상품 ID/수량/옵션 ID를 서버에서 검증하며, 상품 가격은 DB에서 재조회합니다.
+- `header()`, `setcookie()`, `session_start()` 이전 출력 위험을 줄이기 위해 주요 PHP 전용 처리 파일의 마지막 닫는 태그와 trailing whitespace를 정리했습니다.
 
 실서비스 적용 시에는 다음 항목을 추가로 검토해야 합니다.
 - 회원/관리자 비밀번호 해시화 및 비밀번호 정책 강화
@@ -107,14 +110,19 @@
 - 주문 저장에 트랜잭션을 적용해 주문 마스터/상세 저장 정합성을 개선했습니다.
 - 입력값 검증과 SQL Injection 방어를 주요 위험 구간부터 보강했습니다.
 - `main_top.php`의 큰 header 관련 inline CSS 블록을 `css/header.css`로 분리했습니다.
+- `main_bottom.php` footer 영역에 남아 있던 일부 inline style을 `css/footer.css`로 분리했습니다.
+- DB/관리자 계정은 `config.php`가 있으면 우선 사용하고, 없으면 환경변수, 마지막으로 로컬 실습용 기본값 순서로 읽도록 정리했습니다.
+- 주문 저장 및 관리자 주요 Prepared Statement 구간에서 prepare 실패 처리를 보강했습니다.
 - `db/shop62.sql`은 프로젝트 실행용 스키마/샘플/기존 데이터로 유지합니다. 대용량 파일일 수 있으므로 GitHub 웹 화면에서 직접 열기보다는 로컬 DB import 기준으로 사용하는 것을 권장합니다.
 
 ## 실행 방법
 1. 저장소를 클론하거나 프로젝트 파일을 로컬 웹 서버 루트에 배치합니다.
 2. MySQL/MariaDB에서 DB를 생성합니다. (예: `shop62`)
 3. `db/shop62.sql` 파일을 phpMyAdmin 또는 CLI로 로컬 DB에 import합니다. 파일이 클 수 있으므로 GitHub 웹에서 직접 열어 확인하기보다 로컬 환경에서 import하는 방식을 권장합니다.
-4. `common.php`의 DB 접속 정보를 현재 환경에 맞게 수정합니다.
-   - 예: `mysqli_connect("localhost", "root", "", "shop62")`
+4. 필요하면 `config.php.example`을 `config.php`로 복사한 뒤 로컬 DB/관리자 계정 정보를 환경에 맞게 수정합니다.
+   - `config.php`는 개인 로컬 환경 설정 파일이므로 Git에 커밋하지 않습니다.
+   - `common.php`는 `config.php` → 환경변수(`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `ADMIN_ID`, `ADMIN_PASSWORD`) → 로컬 실습용 기본값 순서로 설정을 읽습니다.
+   - 별도 설정이 없으면 기존 로컬 실습 기본값(`localhost`, `root`, 빈 비밀번호, `shop62`, 관리자 `admin`/`1234`)을 사용합니다.
 5. Apache+PHP 환경에서 프로젝트를 실행합니다.
 6. 브라우저에서 `index.html` 또는 `main.php`로 접속합니다.
 7. 관리자 페이지는 `admin/login.php`로 접속합니다.

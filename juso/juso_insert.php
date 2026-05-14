@@ -24,4 +24,3 @@ if (!$result) exit("에러 : " . mysqli_error($db));
 var_dump($uid, $pwd, $name, $tel, $zip, $juso, $email, $birthday);
 
 echo("<script>location.href='juso_list.php'</script>");
-?>

@@ -29,4 +29,3 @@ var_dump($_REQUEST);  // 디버깅용
 
 
 echo("<script>location.href='member_joinend.php'</script>");
-?>

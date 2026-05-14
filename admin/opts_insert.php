@@ -11,4 +11,3 @@
 	if (!$result) exit("에러: $sql");
 
 	echo("<script>location.href='opts.php?id=$id'</script>");
-?>

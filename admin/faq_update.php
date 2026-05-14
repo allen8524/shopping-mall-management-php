@@ -31,4 +31,3 @@ if ($result) {
         history.back();
     </script>";
 }
-?>

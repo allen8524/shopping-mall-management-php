@@ -65,6 +65,9 @@ try {
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = mysqli_prepare($db, $sql);
+    if (!$stmt) {
+        throw new Exception('상품 등록 준비 실패');
+    }
     mysqli_stmt_bind_param(
         $stmt,
         'isssiiiisiiiissss',

@@ -11,4 +11,3 @@ if (empty($_SESSION["admin_id"]) || empty($_SESSION["admin_login"])) {
     header("Location: login.php");
     exit;
 }
-?>

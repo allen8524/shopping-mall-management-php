@@ -86,4 +86,3 @@ $result = mypagination($sql, $args, $total, $pagebar);
 
 <?php
 include "main_bottom.php";
-?>

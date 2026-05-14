@@ -68,4 +68,3 @@ if ($kind === 'order') {
     header('Location: cart.php');
 }
 exit;
-?>

@@ -65,4 +65,3 @@ if ($sel1 !== '')  $qs .= '&sel1='  . urlencode($sel1);
 if ($text1 !== '') $qs .= '&text1=' . urlencode($text1);
 header('Location: qa.php?' . $qs);
 exit;
-?>

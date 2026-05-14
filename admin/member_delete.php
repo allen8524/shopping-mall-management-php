@@ -9,4 +9,3 @@ include "login_main_check.php";
     if (!$result) exit("에러: $sql ");
 
     echo("<script>location.href='member.php'</script>");
-?>

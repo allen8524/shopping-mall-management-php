@@ -1,19 +1,53 @@
 <?php
-$db = mysqli_connect("localhost", "root", "", "shop62");
+// 환경별 설정 우선순위: config.php > 환경변수 > 로컬 실습용 기본값
+$config_path = __DIR__ . "/config.php";
+$config_loaded = false;
+if (is_file($config_path)) {
+    include $config_path;
+    $config_loaded = true;
+}
+
+if (!function_exists('get_config_value')) {
+    function get_config_value($constant_name, $env_name, $default_value, $config_loaded) {
+        if ($config_loaded && defined($constant_name)) {
+            return constant($constant_name);
+        }
+
+        $env_value = getenv($env_name);
+        if ($env_value !== false && $env_value !== '') {
+            return $env_value;
+        }
+
+        if (defined($constant_name)) {
+            return constant($constant_name);
+        }
+
+        return $default_value;
+    }
+}
+
+// 아래 기본값은 로컬 실습용입니다. 실제 환경에서는 config.php 또는 환경변수로 분리해 사용하세요.
+$db_host = get_config_value('DB_HOST', 'DB_HOST', 'localhost', $config_loaded);
+$db_user = get_config_value('DB_USER', 'DB_USER', 'root', $config_loaded);
+$db_password = get_config_value('DB_PASSWORD', 'DB_PASSWORD', '', $config_loaded);
+$db_name = get_config_value('DB_NAME', 'DB_NAME', 'shop62', $config_loaded);
+
+$db = mysqli_connect($db_host, $db_user, $db_password, $db_name);
 
 if (!$db) {
-    exit("DB연결에러: " . mysqli_connect_error());
+    error_log('DB connection failed: ' . mysqli_connect_error());
+    exit("DB연결에러");
 }
 
 mysqli_set_charset($db, "utf8mb4");
 
-$admin_id = "admin";
-$admin_pw = "1234";
+$admin_id = get_config_value('ADMIN_ID', 'ADMIN_ID', 'admin', $config_loaded);
+$admin_pw = get_config_value('ADMIN_PASSWORD', 'ADMIN_PASSWORD', '1234', $config_loaded);
 $page_line = 5;
 $page_block = 5;
 
 
-	
+
 		// 상품 상태 선택 옵션
 	$a_status = array("상품상태", "판매중", "판매중지", "품절");
 	$n_status = count($a_status);
@@ -95,16 +129,16 @@ $bank_info = array(
     24 => '갤러리아백화점카드 1522-1778'
 );
 
-	
-		
+
+
 	function mypagination($query, $args, &$count, &$pagebar)
 	{
 		global $db, $page_line, $page_block;			// 서버DB 정보
 
 		$page = isset($_REQUEST["page"]) ? max(1, (int)$_REQUEST["page"]) : 1; // page초기화
-		
+
 		$url=basename($_SERVER['PHP_SELF']) . "?" . $args;    // 문서이름?전송할 변수들
-		
+
 		// 전체 레코드개수
 		$sql = strtolower( $query );
 		$sql ="select count(*) " . substr($sql, strpos($sql,"from"));
@@ -115,7 +149,7 @@ $bank_info = array(
 
 		// 페이지내 자료
 		$first = ($page-1) * $page_line;
-		
+
 		$sql = str_replace(";", "", $query);
 		$sql .= " limit $first, $page_line";
 		$result=mysqli_query($db, $sql);
@@ -123,7 +157,7 @@ $bank_info = array(
 
 		// pagebar html
 		$pages = ceil($count/$page_line);				// 페이지수
-		$blocks = ceil($pages/$page_block);			// 블록수 
+		$blocks = ceil($pages/$page_block);			// 블록수
 		$block = ceil($page/$page_block);			// 블록 위치
 		$page_s = $page_block * ($block-1);		// 블록의 시작페이지
 		$page_e = $page_block * $block;				// 블록의 마지막페이지
@@ -153,11 +187,9 @@ $bank_info = array(
 			$pagebar .="<li class='page-item'>
 					<a class='page-link' href='$url&page=" . $page_e+1 . "'>▶</a>
 				</li>";
-				
+
 		$pagebar .="</ul>
 			</nav>";
-			
+
 		return $result;
 	}
-?>
-	

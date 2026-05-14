@@ -14,6 +14,9 @@ mysqli_begin_transaction($db);
 try {
     // 3. 이미지 파일명 조회 (Prepared Statement 사용)
     $stmt = mysqli_prepare($db, "SELECT image1, image2, image3 FROM product WHERE id = ?");
+    if (!$stmt) {
+        throw new Exception('상품 이미지 조회 준비 실패');
+    }
     mysqli_stmt_bind_param($stmt, 'i', $id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_bind_result($stmt, $img1, $img2, $img3);
@@ -39,6 +42,9 @@ try {
 
     // 5. 상품 레코드 삭제 (Prepared Statement 사용)
     $del = mysqli_prepare($db, "DELETE FROM product WHERE id = ?");
+    if (!$del) {
+        throw new Exception('상품 삭제 준비 실패');
+    }
     mysqli_stmt_bind_param($del, 'i', $id);
     mysqli_stmt_execute($del);
     if (mysqli_stmt_affected_rows($del) === 0) {

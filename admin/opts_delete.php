@@ -15,4 +15,3 @@
 
 	
 	echo("<script>location.href='opts.php?id=$opt_id'</script>");
-?>

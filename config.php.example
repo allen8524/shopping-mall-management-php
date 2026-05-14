@@ -1,0 +1,12 @@
+<?php
+// config.php.example
+// 로컬 환경에 맞게 값을 수정한 뒤 프로젝트 루트의 config.php로 복사해서 사용하세요.
+// config.php는 개인 로컬 설정 파일이므로 Git에 커밋하지 않습니다.
+
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASSWORD', '');
+define('DB_NAME', 'shop62');
+
+define('ADMIN_ID', 'admin');
+define('ADMIN_PASSWORD', '1234');
