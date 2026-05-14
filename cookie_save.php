@@ -5,6 +5,3 @@
 	setcookie("cookie_value", $name);
 
 	echo("<script>location.href='cookie_view.php'</script>");
-
-
-?>

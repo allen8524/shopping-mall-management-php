@@ -4,6 +4,9 @@
     // 1) product 정보
     $id = max(0, (int)($_GET['id'] ?? 0));
     $stmt = mysqli_prepare($db, "SELECT * FROM product WHERE id = ?");
+    if (!$stmt) {
+        exit("상품 정보를 조회하는 중 오류가 발생했습니다.");
+    }
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -261,7 +264,7 @@ if (form2.opts<?= (int)$cat['id'] ?>.value == 0) {
       <button type="button" class="btn-close" id="modal-close"></button>
       <div class="modal-body text-center" style="position: relative; z-index: 9999;">
         <img src="product/<?= $product_image1 ?>"
-             class="zoom-in img-thumbnail
+             class="zoom-in img-thumbnail"
              style="max-width:100%;"
              id="modal-img">
       </div>
@@ -298,4 +301,4 @@ if (form2.opts<?= (int)$cat['id'] ?>.value == 0) {
 </script>
 
 
-<?php include "main_bottom.php"; ?>
+<?php include "main_bottom.php";

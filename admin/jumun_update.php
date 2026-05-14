@@ -34,8 +34,17 @@ if (!preg_match('/^\d{10}$/', $id) || $state < 0 || $state > 5) {
 }
 
 $stmt = mysqli_prepare($db, "UPDATE jumun SET state = ? WHERE id = ?");
+if (!$stmt) {
+    error_log("admin/jumun_update.php: failed to prepare order state update");
+    header("Location: $redirect_url");
+    exit;
+}
+
 mysqli_stmt_bind_param($stmt, "is", $state, $id);
-mysqli_stmt_execute($stmt);
+if (!mysqli_stmt_execute($stmt)) {
+    error_log("admin/jumun_update.php: failed to execute order state update");
+}
+mysqli_stmt_close($stmt);
 
 // 목록 페이지로 리다이렉트 (파라미터 유지)
 header("Location: $redirect_url");

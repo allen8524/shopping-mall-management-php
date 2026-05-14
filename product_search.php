@@ -59,4 +59,4 @@ $result = mypagination($sql, $args, $count, $pagebar);
 </div>
 
 <br><br><br>
-<?php include "main_bottom.php"; ?>
+<?php include "main_bottom.php";

@@ -84,6 +84,9 @@ try {
     $prefix = date('ymd');
     $like_prefix = $prefix . '%';
     $stmt = mysqli_prepare($db, "SELECT MAX(id) AS max_id FROM jumun WHERE id LIKE ?");
+    if (!$stmt) {
+        throw new Exception("주문번호 조회 준비 실패");
+    }
     mysqli_stmt_bind_param($stmt, "s", $like_prefix);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
@@ -97,6 +100,9 @@ try {
     $validated_items = [];
 
     $product_stmt = mysqli_prepare($db, "SELECT name, price, discount FROM product WHERE id = ? LIMIT 1");
+    if (!$product_stmt) {
+        throw new Exception("상품 조회 준비 실패");
+    }
     foreach ($cart_items as $item) {
         $item_product = $item['product'];
         mysqli_stmt_bind_param($product_stmt, "i", $item_product);
@@ -147,6 +153,9 @@ try {
             ?, ?, ?, 0
         )";
     $jumun_stmt = mysqli_prepare($db, $jumun_sql);
+    if (!$jumun_stmt) {
+        throw new Exception("주문 마스터 저장 준비 실패");
+    }
     mysqli_stmt_bind_param(
         $jumun_stmt,
         "sssisssssssssssisiiisi",
@@ -183,6 +192,9 @@ try {
             jumun_id, product, num, price, prices, discount, opts_id1, opts_id2, opts_id3
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
+    if (!$jumuns_stmt) {
+        throw new Exception("주문 상세 저장 준비 실패");
+    }
     foreach ($validated_items as $item) {
         $detail_product = $item['product'];
         $detail_qty = $item['qty'];
@@ -249,4 +261,4 @@ include "main_top.php";
         </div>
     </div>
     <br><br><br>
-    <?php include "main_bottom.php"; ?>
+    <?php include "main_bottom.php";

@@ -1,3 +1,24 @@
+.footer-info {
+  line-height: 1;
+}
+
+.footer-company {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.footer-company-name {
+  font-weight: 600;
+}
+
+.footer-nowrap {
+  white-space: nowrap;
+}
+
+.footer-links {
+  font-size: 12px;
+}
+
 .footer-logo {
   height: 25px;
   transition: transform 0.3s ease;

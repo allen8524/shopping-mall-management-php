@@ -15,4 +15,3 @@ if ($res && mysqli_num_rows($res) > 0) {
 // 조건에 맞는 제품이 없을 경우 기본 상품 페이지로 이동
 header("Location: product.php");
 exit;
-?>

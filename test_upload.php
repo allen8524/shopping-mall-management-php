@@ -21,4 +21,3 @@ if ($_FILES["filename"]["error"] === 0) {
 } else {
     echo("업로드 실패 - 에러코드: " . $_FILES["filename"]["error"]);
 }
-?>

@@ -20,4 +20,3 @@
     else {
         echo("<script>alert('로그인 정보가 일치하지 않습니다.'); location.href='member_login.php'</script>"); // 로그인 페이지로 이동
     }
-?>

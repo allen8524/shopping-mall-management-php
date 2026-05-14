@@ -14,6 +14,3 @@
 	if (!$result) exit("에러 : $sql");
 	
 	echo("<script>location.href='sj_list.php'</script>");
-	
-
-?>

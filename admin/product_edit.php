@@ -9,6 +9,9 @@ if ($id <= 0) exit('상품 ID 없음');
 // 2. Prepared Statement로 상품 조회
 $sql = "SELECT * FROM product WHERE id = ?";
 $stmt = mysqli_prepare($db, $sql);
+if (!$stmt) {
+    exit('상품 조회 중 오류가 발생했습니다.');
+}
 mysqli_stmt_bind_param($stmt, 'i', $id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);

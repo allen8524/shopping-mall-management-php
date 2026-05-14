@@ -22,4 +22,3 @@
     if (!$result) exit("에러: $sql");
 
     echo("<script>location.href='juso_list.php'</script>");
-?>
