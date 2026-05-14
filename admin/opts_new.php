@@ -1,7 +1,9 @@
 <?php
 	include "login_main_check.php";
 	include "../common.php";
-	$id = $_REQUEST["id"];
+include "csrf.php";
+	$id = (int)($_GET["id"] ?? 0);
+	if ($id <= 0) { header("Location: opt.php"); exit; }
 ?>
 <!doctype html>
 <html lang="kr">
@@ -24,6 +26,7 @@
 <!-------------------------------------------------------------------------------------------->	
 
 <form name="form1" method="post" action="opts_insert.php">
+<?= admin_csrf_input() ?>
 <input type="hidden" name="id" value="<?=$id; ?>">
 
 <div class="row mx-1 justify-content-center">

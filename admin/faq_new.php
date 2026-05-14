@@ -1,6 +1,7 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
 ?>
 <!doctype html>
 <html lang="kr">
@@ -21,6 +22,7 @@ include "../common.php";
 <script> document.write(admin_menu());</script>
 
 <form name="form1" method="post" action="faq_insert.php">
+<?= admin_csrf_input() ?>
 
 <div class="row mx-1 justify-content-center">
 	<div class="col-sm-10" align="center">

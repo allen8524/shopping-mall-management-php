@@ -1,6 +1,7 @@
 <?php
 	include "login_main_check.php";
     include "../common.php";
+include "csrf.php";
     $opt_id = isset($_REQUEST["id"]) ? (int)$_REQUEST["id"] : 0;
     $text1  = $_REQUEST["text1"] ?? "";
 
@@ -62,9 +63,11 @@
                     <td><?= htmlspecialchars($row["name"]) ?></td>
                     <td>
                         <a href="opts_edit.php?id=<?= $row["id"] ?>&id1=<?= $opt_id ?>" class="btn btn-sm mybutton-blue">수정</a>
-                        <a href="opts_delete.php?id=<?= $row["id"] ?>&id1=<?= $opt_id ?>"
-                           class="btn btn-sm mybutton-red"
-                           onclick="return confirm('삭제할까요?');">삭제</a>
+                        <form method="post" action="opts_delete.php" class="d-inline" onsubmit="return confirm('삭제할까요?');">
+                            <?= admin_csrf_input() ?>
+                            <input type="hidden" name="id" value="<?= $row["id"] ?>">
+                            <button type="submit" class="btn btn-sm mybutton-red">삭제</button>
+                        </form>
                     </td>
                 </tr>
 <?php

@@ -1,6 +1,8 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
+admin_require_post_csrf('product.php');
 
 // 1. 필수 값 검증 및 필터링
 $menu     = isset($_POST['menu'])    ? (int)$_POST['menu']    : null;
@@ -77,7 +79,7 @@ try {
         $regday, $pic1, $pic2, $pic3
     );
     if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception('DB 저장 실패: ' . mysqli_stmt_error($stmt));
+        throw new Exception('상품 등록 실패');
     }
     mysqli_stmt_close($stmt);
 
@@ -94,5 +96,6 @@ try {
             unlink(__DIR__ . '/../product/' . $img);
         }
     }
-    exit('에러: ' . $e->getMessage());
+    error_log('Product insert failed: ' . $e->getMessage());
+    exit('상품 등록 처리 중 오류가 발생했습니다.');
 }

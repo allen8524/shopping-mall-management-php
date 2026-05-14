@@ -4,17 +4,18 @@
 	소속 : 인덕대학교 컴퓨터소프트웨어학과
 	이름 : 교수 윤형태 (2024.02)
 ---------------------------------------------------------------------------------------------->
-<?
+<?php
 	include "common.php";
 	
-	$text1=$_REQUEST["text1"] ? $_REQUEST["text1"] : "";
-	$sql="select * from juso where name like '%$text1%' order by name" ;
+	$text1 = trim($_REQUEST["text1"] ?? "");
+	$text1_esc = mysqli_real_escape_string($db, $text1);
+	$sql="select * from juso where name like '%$text1_esc%' order by name" ;
 	
 	$args = "text1=$text1";
 	$result=mypagination($sql, $args, $count, $pagebar);
 
 	
-	if (!$result) exit("에러: $sql");
+	if (!$result) { error_log("Juso list query failed: " . mysqli_error($db)); exit("주소 목록을 조회할 수 없습니다."); }
 
 
 ?>
@@ -62,7 +63,7 @@
 		<td width="15%">수정 / 삭제</td>
 	</tr>
 
-	<?
+	<?php
 		foreach ($result as $row)
 		{
 			if($row["sm"]==0) $sm="양력"; else $sm="음력";
@@ -87,12 +88,12 @@
 		</td>
 	</tr>
 
-<?
+<?php
 		}
 	?>
 </table>
 
-<?
+<?php
 	echo $pagebar;
 ?>
 

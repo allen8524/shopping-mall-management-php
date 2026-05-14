@@ -1,6 +1,7 @@
 <?php
 include "login_main_check.php";   // 관리자 인증 체크
 include "../common.php";
+include "csrf.php";
 
 // 검색 조건 처리
 $text1 = trim($_REQUEST["text1"] ?? "");
@@ -38,9 +39,9 @@ if (!$result) exit("회원 목록을 조회할 수 없습니다.");
 <body>
 
 <div class="container">
-<!-------------------------------------------------------------------------------------------->	
+<!-------------------------------------------------------------------------------------------->
 <script> document.write(admin_menu());</script>
-<!-------------------------------------------------------------------------------------------->	
+<!-------------------------------------------------------------------------------------------->
 
 <div class="row mx-1 justify-content-center">
 	<div class="col" align="center">
@@ -48,7 +49,7 @@ if (!$result) exit("회원 목록을 조회할 수 없습니다.");
 	<h4 class="m-0 mb-2">회원</h4>
 
 	<form name="form1" method="post" action="member.php">
-	
+
 	<table class="table table-sm table-borderless m-0">
 		<tr>
 			<td align="left" style="padding-top:12px">
@@ -57,21 +58,21 @@ if (!$result) exit("회원 목록을 조회할 수 없습니다.");
 			<td align="right">
 				<div class="d-inline-flex">
 					<div class="input-group input-group-sm">
-						<select name="sel1" class="form-select form-select-sm bg-light myfs12" style="width:80px;"> 
+						<select name="sel1" class="form-select form-select-sm bg-light myfs12" style="width:80px;">
 								<option value="1" selected>이름</option><option value="2">아이디</option>
 						</select>
-						<input type="text" name="text1" value="<?=$text1?>" style="width:100px;" 
-							class="form-control myfs12" 
-							onKeydown="if (event.keyCode == 13) { form1.submit(); }"> 
-						<button class="btn mycolor1 myfs12" type="button"  
+						<input type="text" name="text1" value="<?=$text1?>" style="width:100px;"
+							class="form-control myfs12"
+							onKeydown="if (event.keyCode == 13) { form1.submit(); }">
+						<button class="btn mycolor1 myfs12" type="button"
 							onClick="form1.submit();">검색</button>
 					</div>
 				</div>
-				
+
 			</td>
 		</tr>
 	</table>
-	
+
 	</form>
 
 
@@ -85,7 +86,7 @@ if (!$result) exit("회원 목록을 조회할 수 없습니다.");
 			<td width="15%">수정 / 삭제</td>
 		</tr>
 
-		<?
+		<?php
 		foreach ($result as $row)
 		{
 			$tel1=trim(substr($row["tel"],0,3));
@@ -100,25 +101,27 @@ if (!$result) exit("회원 목록을 조회할 수 없습니다.");
 			<td align="left" class="px-2"><?=$row["email"]; ?></td>
 			<td><?=$row["gubun"]==0 ? "회원" : "탈퇴"?></td>
 			<td>
-				<a href="member_edit.php?id=<?=$row["id"]; ?>" 
+				<a href="member_edit.php?id=<?=$row["id"]; ?>"
 					class="btn btn-sm btn-outline-info mybutton-blue">수정</a>
-				<a href="member_delete.php?id=<?=$row["id"]; ?>"  
-					class="btn btn-sm btn-outline-danger mybutton-red" 
-					onclick="javascript:return confirm('삭제할까요 ?');">삭제</a>				
+				<form method="post" action="member_delete.php" class="d-inline" onsubmit="return confirm('삭제할까요 ?');">
+					<?= admin_csrf_input() ?>
+					<input type="hidden" name="id" value="<?=$row["id"]; ?>">
+					<button type="submit" class="btn btn-sm btn-outline-danger mybutton-red">삭제</button>
+				</form>
 			</td>
 		</tr>
-		<?
+		<?php
 		}
 	?>
 	</table>
 
-	<?
+	<?php
 	echo $pagebar;
 ?>
 
 	</div>
 </div>
-<!-------------------------------------------------------------------------------------------->	
+<!-------------------------------------------------------------------------------------------->
 </div>
 
 </body>

@@ -1,6 +1,8 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
+admin_require_post_csrf('product.php');
 
 function clean_product_image_name($name) {
     $name = trim((string)$name);
@@ -92,9 +94,29 @@ try {
         throw new Exception('필수 입력값이 누락되었거나 형식이 잘못되었습니다.');
     }
 
-    $image1 = clean_product_image_name($_POST['imagename1'] ?? '');
-    $image2 = clean_product_image_name($_POST['imagename2'] ?? '');
-    $image3 = clean_product_image_name($_POST['imagename3'] ?? '');
+    $selectSql = "SELECT image1, image2, image3 FROM product WHERE id = ?";
+    $selectStmt = mysqli_prepare($db, $selectSql);
+    if (!$selectStmt) {
+        throw new Exception('상품 정보 조회 준비 실패');
+    }
+
+    mysqli_stmt_bind_param($selectStmt, 'i', $id);
+    if (!mysqli_stmt_execute($selectStmt)) {
+        mysqli_stmt_close($selectStmt);
+        throw new Exception('상품 정보 조회 실패');
+    }
+
+    $result = mysqli_stmt_get_result($selectStmt);
+    $product = $result ? mysqli_fetch_assoc($result) : null;
+    mysqli_stmt_close($selectStmt);
+
+    if (!$product) {
+        throw new Exception('상품 정보를 찾을 수 없습니다.');
+    }
+
+    $image1 = clean_product_image_name($product['image1'] ?? '');
+    $image2 = clean_product_image_name($product['image2'] ?? '');
+    $image3 = clean_product_image_name($product['image3'] ?? '');
 
     $uploaded1 = upload_product_image('image1');
     if ($uploaded1 !== '') $newImages[] = $uploaded1;
@@ -168,7 +190,7 @@ try {
     );
 
     if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception('DB 수정 실패: ' . mysqli_stmt_error($stmt));
+        throw new Exception('상품 수정 실패');
     }
     mysqli_stmt_close($stmt);
 
@@ -195,11 +217,16 @@ try {
     }
 
     foreach ($newImages as $img) {
-        $path = product_image_path($img);
-        if ($path !== '' && is_file($path)) {
-            unlink($path);
+        try {
+            $path = product_image_path($img);
+            if ($path !== '' && is_file($path)) {
+                unlink($path);
+            }
+        } catch (Throwable $cleanupError) {
+            error_log('Product image cleanup failed: ' . $cleanupError->getMessage());
         }
     }
 
-    exit('에러: ' . $e->getMessage());
+    error_log('Product update failed: ' . $e->getMessage());
+    exit('상품 수정 처리 중 오류가 발생했습니다.');
 }

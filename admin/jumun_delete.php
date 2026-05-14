@@ -1,16 +1,43 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
+admin_require_post_csrf('jumun.php');
 
-$id = $_GET["id"] ?? "";
-if (!$id) exit("주문번호 없음");
+$id = trim($_POST['id'] ?? '');
+if (!preg_match('/^\d{10}$/', $id)) {
+    header('Location: jumun.php');
+    exit;
+}
 
-// 삭제 순서 중요: 먼저 상세항목(jumuns), 그 다음 본 주문(jumun)
-$sql1 = "DELETE FROM jumuns WHERE jumun_id = '$id'";
-$sql2 = "DELETE FROM jumun  WHERE id = '$id'";
+mysqli_begin_transaction($db);
+try {
+    $stmt = mysqli_prepare($db, "DELETE FROM jumuns WHERE jumun_id = ?");
+    if (!$stmt) {
+        throw new Exception('Order detail delete prepare failed');
+    }
+    mysqli_stmt_bind_param($stmt, 's', $id);
+    if (!mysqli_stmt_execute($stmt)) {
+        throw new Exception('Order detail delete execute failed');
+    }
+    mysqli_stmt_close($stmt);
 
-mysqli_query($db, $sql1);
-mysqli_query($db, $sql2);
+    $stmt = mysqli_prepare($db, "DELETE FROM jumun WHERE id = ?");
+    if (!$stmt) {
+        throw new Exception('Order delete prepare failed');
+    }
+    mysqli_stmt_bind_param($stmt, 's', $id);
+    if (!mysqli_stmt_execute($stmt)) {
+        throw new Exception('Order delete execute failed');
+    }
+    mysqli_stmt_close($stmt);
 
-// 삭제 후 목록 페이지로 리디렉션
-echo "<script>location.href='jumun.php';</script>";
+    mysqli_commit($db);
+} catch (Throwable $e) {
+    mysqli_rollback($db);
+    error_log('Order delete failed: ' . $e->getMessage());
+    exit('주문 삭제 처리 중 오류가 발생했습니다.');
+}
+
+header('Location: jumun.php');
+exit;

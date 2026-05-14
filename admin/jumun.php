@@ -1,6 +1,7 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
 
 // 검색 파라미터
 $day1  = $_REQUEST["day1"]  ?? date("Y-m-01");
@@ -52,20 +53,33 @@ $result = mypagination($sql, $args, $count, $pagebar);
 <script>document.write(admin_menu());</script>
 
 <script>
+function setHidden(form, name, value) {
+    let input = form.querySelector('input[name="' + name + '"]');
+    if (!input) {
+        input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        form.appendChild(input);
+    }
+    input.value = value;
+}
+
 function go_update(id, pos) {
     let form = document.forms["form1"];
-    let state = form["state" + pos].value;
-    let params = new URLSearchParams({
-        id: id,
-        state: state,
-        page: form.page.value,
-        sel1: form.sel1.value,
-        sel2: form.sel2.value,
-        text1: form.text1.value,
-        day1: form.day1.value,
-        day2: form.day2.value
-    });
-    location.href = `jumun_update.php?${params.toString()}`;
+    setHidden(form, 'id', id);
+    setHidden(form, 'state', form["state" + pos].value);
+    form.method = 'post';
+    form.action = 'jumun_update.php';
+    form.submit();
+}
+
+function go_delete(id) {
+    if (!confirm('삭제할까요 ?')) return;
+    let form = document.forms["form1"];
+    setHidden(form, 'id', id);
+    form.method = 'post';
+    form.action = 'jumun_delete.php';
+    form.submit();
 }
 </script>
 
@@ -76,6 +90,7 @@ function go_update(id, pos) {
 
 		<form name="form1" method="post" action="jumun.php">
 		<input type="hidden" name="page" value="<?=$page?>">
+		<?= admin_csrf_input() ?>
 
         <table class="table table-sm table-borderless m-0 p-0">
             <tr>
@@ -149,7 +164,7 @@ function go_update(id, pos) {
 					</div>
 				</td>
 				<td>
-					<a href="jumun_delete.php?id=<?=$row["id"]?>" class="btn btn-sm mybutton-red" onclick="return confirm('삭제할까요 ?');">삭제</a>
+					<button type="button" class="btn btn-sm mybutton-red" onclick="go_delete('<?=$row["id"]?>');">삭제</button>
 				</td>
 			</tr>
 			<?php $i++; endforeach; ?>

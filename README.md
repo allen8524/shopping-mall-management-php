@@ -44,6 +44,15 @@
 - `product/`: 상품 이미지 업로드/저장 폴더
 - `images/`: UI 및 공통 이미지
 - `db/shop62.sql`: DB 스키마 및 샘플 데이터
+- `docs/order-flow.md`: 상품 상세부터 주문 저장까지의 흐름 설명
+- `docs/security-notes.md`: 보안 개선 범위와 남은 한계 정리
+- `docs/admin-management-flow.md`: 관리자 기능별 파일 흐름 표
+- `scripts/check-php.sh`: Git Bash 또는 WSL 기준 PHP 문법/보안 패턴 점검 보조 스크립트
+
+## 문서 링크
+- [주문 처리 흐름](docs/order-flow.md)
+- [보안 개선 메모](docs/security-notes.md)
+- [관리자 관리 흐름](docs/admin-management-flow.md)
 
 ## DB 설계 요약
 | 테이블 | 주요 역할 | 주요 컬럼 |
@@ -95,12 +104,16 @@
 - 상품 상세 ID, 카테고리/정렬 값, 관리자 검색/주문 상태 변경 등 주요 입력값에 정수 캐스팅, 허용값 검증, 문자열 escape 또는 Prepared Statement를 일부 적용했습니다.
 - 주문 저장 시 장바구니 쿠키 값을 그대로 신뢰하지 않고 상품 ID/수량/옵션 ID를 서버에서 검증하며, 상품 가격은 DB에서 재조회합니다.
 - 상품 수정 처리에도 Prepared Statement, 필수값 검증, 이미지 업로드 확장자 검증과 안전한 파일명 저장을 적용했습니다.
+- 상품 수정 시 기존 이미지명은 조작 가능한 POST hidden input이 아니라 DB에서 조회한 현재 이미지명을 기준으로 삭제/교체하도록 개선했습니다.
+- 관리자 상품/회원/옵션/소옵션/FAQ/주문 변경 처리에 POST 요청과 session 기반 CSRF 토큰 검증을 적용했습니다.
+- 관리자 삭제/등록/수정 처리 일부는 Prepared Statement와 정수 검증을 적용해 SQL Injection 위험과 SQL 노출을 줄였습니다.
 - 주문 처리 예외 상황에서는 트랜잭션 시작 여부를 확인한 뒤 rollback 하도록 안정성을 보강했습니다.
 - `header()`, `setcookie()`, `session_start()` 이전 출력 위험을 줄이기 위해 주요 PHP 전용 처리 파일의 마지막 닫는 태그와 trailing whitespace를 정리했습니다.
 
 실서비스 적용 시에는 다음 항목을 추가로 검토해야 합니다.
 - 회원/관리자 비밀번호 해시화 및 비밀번호 정책 강화
-- CSRF 토큰 적용
+- 사용자 영역 주요 변경 요청의 CSRF 토큰 적용 확대
+- 관리자 GET 삭제 흐름은 주요 관리 기능에서 POST+CSRF로 전환했지만, 오래된 실습 보조 영역은 별도 점검
 - 개인정보 암호화 및 접근 통제 강화
 - 결제 PG 연동 검증 및 결제 위변조 방지
 - 파일 업로드 확장자/MIME/용량 검증 강화
@@ -111,7 +124,8 @@
 - 관리자 인증을 쿠키 단독 인증에서 session 기반 인증으로 변경했습니다.
 - 주문 저장에 트랜잭션을 적용해 주문 마스터/상세 저장 정합성을 개선했습니다.
 - 입력값 검증과 SQL Injection 방어를 주요 위험 구간부터 보강했습니다.
-- `a.php`의 짧은 PHP 태그를 표준 `<?php` 태그로 정리해 PHP 설정 호환성을 높였습니다.
+- short_open_tag 의존 코드를 표준 `<?php` 태그로 정리해 PHP 설정 호환성을 높였습니다.
+- 참조되지 않는 단순 테스트/업로드 실습 파일을 정리했습니다.
 - `main_top.php`의 큰 header 관련 inline CSS 블록을 `css/header.css`로 분리했습니다.
 - `main_bottom.php` footer 영역에 남아 있던 일부 inline style을 `css/footer.css`로 분리했습니다.
 - DB/관리자 계정은 `config.php`가 있으면 우선 사용하고, 없으면 환경변수, 마지막으로 로컬 실습용 기본값 순서로 읽도록 정리했습니다.
@@ -129,6 +143,7 @@
 5. Apache+PHP 환경에서 프로젝트를 실행합니다.
 6. 브라우저에서 `index.html` 또는 `main.php`로 접속합니다.
 7. 관리자 페이지는 `admin/login.php`로 접속합니다.
+8. 문법/패턴 점검은 Git Bash 또는 WSL 기준으로 `bash scripts/check-php.sh`를 참고해 실행할 수 있습니다.
 
 환경별 경로/계정 정보가 다를 수 있으므로, 로컬 환경에 맞게 DB 계정/웹 루트는 수정해서 사용하면 됩니다.
 
@@ -141,7 +156,7 @@
 
 ## 향후 개선점
 - 사용자 로그인/권한 검증 로직 추가 정리
-- CSRF 토큰 및 서버 측 검증 확대
+- 사용자 영역 CSRF 토큰 및 서버 측 검증 확대
 - 남아 있는 SQL 문자열 결합 구간을 Prepared Statement 방식으로 확장 적용
 - 주문 상태 변경 이력(누가/언제 변경했는지) 기록 기능 추가
 - 상품 검색/필터 UI 및 조건 확장

@@ -4,14 +4,14 @@
 	소속 : 인덕대학교 컴퓨터소프트웨어학과
 	이름 : 교수 윤형태 (2024.02)
 ---------------------------------------------------------------------------------------------->
-<?
+<?php
 	include "common.php";
 	
-	$id=$_REQUEST["id"];
+	$id=(int)($_REQUEST["id"] ?? 0);
 	
 	$sql="select * from sj where id=$id";
 	$result=mysqli_query($db,$sql);
-	if (!$result) exit("에러: $sql");
+	if (!$result) { error_log("Score edit query failed: " . mysqli_error($db)); exit("성적 정보를 조회할 수 없습니다."); }
 	
 	$row=mysqli_fetch_array($result);
 

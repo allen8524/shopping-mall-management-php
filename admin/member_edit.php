@@ -1,22 +1,40 @@
-<?
+<?php
 include "login_main_check.php";
-	include "../common.php";
-	
-	$id=$_REQUEST["id"];
-	
-	$sql="select * from member where id=$id";
-	$result=mysqli_query($db,$sql);
-	if (!$result) exit("에러: $sql");
+include "../common.php";
+include "csrf.php";
 
-	$row=mysqli_fetch_array($result);
+$id = (int)($_GET['id'] ?? 0);
+if ($id <= 0) {
+    header('Location: member.php');
+    exit;
+}
 
-    $tel1 = trim(substr($row["tel"], 0, 3));
-    $tel2 = trim(substr($row["tel"], 3, 4));
-    $tel3 = trim(substr($row["tel"], 7, 4));
+$stmt = mysqli_prepare($db, "SELECT * FROM member WHERE id = ?");
+if (!$stmt) {
+    error_log('Member edit prepare failed: ' . mysqli_error($db));
+    exit('회원 정보를 조회할 수 없습니다.');
+}
+mysqli_stmt_bind_param($stmt, 'i', $id);
+if (!mysqli_stmt_execute($stmt)) {
+    error_log('Member edit execute failed: ' . mysqli_stmt_error($stmt));
+    mysqli_stmt_close($stmt);
+    exit('회원 정보를 조회할 수 없습니다.');
+}
+$result = mysqli_stmt_get_result($stmt);
+$row = $result ? mysqli_fetch_array($result) : null;
+mysqli_stmt_close($stmt);
+if (!$row) {
+    header('Location: member.php');
+    exit;
+}
 
-	$birthday1 = (substr($row["birthday"], 0, 4));
-    $birthday2 = (substr($row["birthday"], 5, 2));
-    $birthday3 = (substr($row["birthday"], 8, 2));
+$tel1 = trim(substr($row["tel"], 0, 3));
+$tel2 = trim(substr($row["tel"], 3, 4));
+$tel3 = trim(substr($row["tel"], 7, 4));
+
+$birthday1 = (substr($row["birthday"], 0, 4));
+$birthday2 = (substr($row["birthday"], 5, 2));
+$birthday3 = (substr($row["birthday"], 8, 2));
 
 ?>
 
@@ -49,6 +67,7 @@ include "login_main_check.php";
 
 <!-- form2 시작 -->
 <form name="form2" method="post" action="member_update.php">
+<?= admin_csrf_input() ?>
 
 <input type="hidden" name="id" value="<?=$id ?>">
 

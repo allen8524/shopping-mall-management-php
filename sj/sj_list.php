@@ -4,17 +4,18 @@
 	소속 : 인덕대학교 컴퓨터소프트웨어학과
 	이름 : 교수 윤형태 (2024.02)
 ---------------------------------------------------------------------------------------------->
-<?
+<?php
 	include "common.php";
 	
-	$text1=$_REQUEST["text1"] ? $_REQUEST["text1"] : "";
+	$text1 = trim($_REQUEST["text1"] ?? "");
+	$text1_esc = mysqli_real_escape_string($db, $text1);
 	
-	$sql="select * from sj where name like '%$text1%' order by name" ;
+	$sql="select * from sj where name like '%$text1_esc%' order by name" ;
 	$args = "text1=$text1";
 	$result=mypagination($sql, $args, $count, $pagebar);
 
 	
-	if (!$result) exit("에러: $sql");
+	if (!$result) { error_log("Score list query failed: " . mysqli_error($db)); exit("성적 목록을 조회할 수 없습니다."); }
 
 ?>
 <!doctype html>
@@ -64,7 +65,7 @@
 		<td class="mycolor2">평균</td>
 		<td class="mycolor2" width="15%">수정/삭제</td>
 	</tr>
-	<?
+	<?php
 		foreach ($result as $row)
 		{
 		$id=$row["id"];
@@ -87,12 +88,12 @@
 				onClick="return confirm('삭제할까요 ?');">삭제</a>
 		</td>
 	</tr>
-	<?
+	<?php
 		}
 	?>
 </table>
 
-<?
+<?php
 	echo $pagebar;
 ?>
 

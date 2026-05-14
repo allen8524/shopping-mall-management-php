@@ -1,22 +1,32 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
 
-// 1. ID 가져오기
-$id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
-if (!$id) {
-    echo "<script>alert('잘못된 접근입니다.'); history.back();</script>";
+$id = (int)($_GET['id'] ?? 0);
+if ($id <= 0) {
+    header('Location: faq.php');
     exit;
 }
 
-// 2. 데이터 조회
-$sql = "SELECT * FROM faq WHERE id = $id";
-$result = mysqli_query($db, $sql);
-if (!$result || mysqli_num_rows($result) == 0) {
-    echo "<script>alert('FAQ 항목을 찾을 수 없습니다.'); history.back();</script>";
+$stmt = mysqli_prepare($db, "SELECT * FROM faq WHERE id = ?");
+if (!$stmt) {
+    error_log('FAQ edit prepare failed: ' . mysqli_error($db));
+    exit('FAQ 정보를 조회할 수 없습니다.');
+}
+mysqli_stmt_bind_param($stmt, 'i', $id);
+if (!mysqli_stmt_execute($stmt)) {
+    error_log('FAQ edit execute failed: ' . mysqli_stmt_error($stmt));
+    mysqli_stmt_close($stmt);
+    exit('FAQ 정보를 조회할 수 없습니다.');
+}
+$result = mysqli_stmt_get_result($stmt);
+$row = $result ? mysqli_fetch_array($result) : null;
+mysqli_stmt_close($stmt);
+if (!$row) {
+    header('Location: faq.php');
     exit;
 }
-$row = mysqli_fetch_array($result);
 ?>
 <!doctype html>
 <html lang="kr">
@@ -37,6 +47,7 @@ $row = mysqli_fetch_array($result);
 <script> document.write(admin_menu());</script>
 
 <form name="form1" method="post" action="faq_update.php">
+<?= admin_csrf_input() ?>
 <input type="hidden" name="id" value="<?= $id ?>">
 
 <div class="row mx-1 justify-content-center">

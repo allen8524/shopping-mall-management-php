@@ -24,13 +24,23 @@
 		self.close();
 	}
 </script>
-<?
+<?php
     include "common.php";
-    $uid = $_REQUEST["uid"];
-    $sql="select * from member where uid='$uid'";
-    $result=mysqli_query($db,$sql);
-    if (!$result) exit("에러: $sql");
-    $count=mysqli_num_rows($result);
+    $uid = trim($_REQUEST["uid"] ?? '');
+    $stmt = mysqli_prepare($db, "SELECT id FROM member WHERE uid = ?");
+    if (!$stmt) {
+        error_log('Member ID check prepare failed: ' . mysqli_error($db));
+        exit('아이디 확인 중 오류가 발생했습니다.');
+    }
+    mysqli_stmt_bind_param($stmt, 's', $uid);
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log('Member ID check execute failed: ' . mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        exit('아이디 확인 중 오류가 발생했습니다.');
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    $count = $result ? mysqli_num_rows($result) : 0;
+    mysqli_stmt_close($stmt);
 ?>
 
 <!--  페이지 제목 -->
@@ -45,7 +55,7 @@
 		<hr style="height:2px" class="my-0">
 		<br><br>
 		
-        <?
+        <?php
             if ($count == 0)
                 echo "<b>$uid</b>는 사용 가능한 아이디입니다.
                         <br><br><br>

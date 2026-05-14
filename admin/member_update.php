@@ -1,29 +1,46 @@
-<?
-	include "login_main_check.php";
-    include "../common.php";
+<?php
+include "login_main_check.php";
+include "../common.php";
+include "csrf.php";
+admin_require_post_csrf('member.php');
 
-    $id = $_REQUEST["id"];
-    $pwd = $_REQUEST["pwd"];
-    $name = $_REQUEST["name"];
-    $tel1 = $_REQUEST["tel1"];
-    $tel2 = $_REQUEST["tel2"];
-    $tel3 = $_REQUEST["tel3"];
-    $zip = $_REQUEST["zip"];
-    $juso = $_REQUEST["juso"];
-    $email = $_REQUEST["email"];
-    $birthday1 = $_REQUEST["birthday1"];
-    $birthday2 = $_REQUEST["birthday2"];
-    $birthday3 = $_REQUEST["birthday3"];
-    $gubun = $_REQUEST["gubun"];
+$id = (int)($_POST['id'] ?? 0);
+$pwd = trim($_POST['pwd'] ?? '');
+$name = trim($_POST['name'] ?? '');
+$tel1 = trim($_POST['tel1'] ?? '');
+$tel2 = trim($_POST['tel2'] ?? '');
+$tel3 = trim($_POST['tel3'] ?? '');
+$zip = trim($_POST['zip'] ?? '');
+$juso = trim($_POST['juso'] ?? '');
+$email = trim($_POST['email'] ?? '');
+$birthday1 = (int)($_POST['birthday1'] ?? 0);
+$birthday2 = (int)($_POST['birthday2'] ?? 0);
+$birthday3 = (int)($_POST['birthday3'] ?? 0);
+$gubun = (int)($_POST['gubun'] ?? 0);
+$gubun = ($gubun === 1) ? 1 : 0;
 
+if ($id <= 0 || $name === '') {
+    header('Location: member.php');
+    exit;
+}
 
-    $tel = sprintf("%-3s%-4s%-4s", $tel1, $tel2, $tel3);
+$tel = sprintf("%-3s%-4s%-4s", $tel1, $tel2, $tel3);
+$birthday = sprintf("%04d-%02d-%02d", $birthday1, $birthday2, $birthday3);
 
-    $birthday = sprintf("%04d-%02d-%02d", $birthday1, $birthday2, $birthday3);
-    
+$sql = "UPDATE member SET pwd = ?, name = ?, tel = ?, zip = ?, juso = ?, email = ?, birthday = ?, gubun = ? WHERE id = ?";
+$stmt = mysqli_prepare($db, $sql);
+if (!$stmt) {
+    error_log('Member update prepare failed: ' . mysqli_error($db));
+    exit('회원 수정 처리 중 오류가 발생했습니다.');
+}
 
-    $sql="update member set pwd='$pwd', name='$name', tel='$tel', zip='$zip', juso='$juso', email='$email', birthday='$birthday', gubun='$gubun' where id = $id";
-    $result=mysqli_query($db, $sql);
-    if (!$result) exit("에러: $sql");
+mysqli_stmt_bind_param($stmt, 'sssssssii', $pwd, $name, $tel, $zip, $juso, $email, $birthday, $gubun, $id);
+if (!mysqli_stmt_execute($stmt)) {
+    error_log('Member update execute failed: ' . mysqli_stmt_error($stmt));
+    mysqli_stmt_close($stmt);
+    exit('회원 수정 처리 중 오류가 발생했습니다.');
+}
 
-    echo("<script>location.href='member.php'</script>");
+mysqli_stmt_close($stmt);
+header('Location: member.php');
+exit;
