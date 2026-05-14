@@ -6,24 +6,32 @@ include "../common.php";
 $day1  = $_REQUEST["day1"]  ?? date("Y-m-01");
 $day2  = $_REQUEST["day2"]  ?? date("Y-m-d");
 $sel1  = $_REQUEST["sel1"]  ?? ""; // 전체는 빈 문자열
-$sel2  = $_REQUEST["sel2"]  ?? 1;
-$text1 = $_REQUEST["text1"] ?? "";
-$page  = $_REQUEST["page"]  ?? 1;
+$sel2  = (int)($_REQUEST["sel2"]  ?? 1);
+$text1 = trim($_REQUEST["text1"] ?? "");
+$page  = max(1, (int)($_REQUEST["page"]  ?? 1));
 
-$where = "where jumunday between '$day1' and '$day2'";
+$day1 = preg_match('/^\d{4}-\d{2}-\d{2}$/', $day1) ? $day1 : date("Y-m-01");
+$day2 = preg_match('/^\d{4}-\d{2}-\d{2}$/', $day2) ? $day2 : date("Y-m-d");
+$sel1 = in_array((string)$sel1, ["", "0", "1", "2", "3", "4", "5"], true) ? (string)$sel1 : "";
+$sel2 = in_array($sel2, [1, 2, 3], true) ? $sel2 : 1;
+$text1_esc = mysqli_real_escape_string($db, $text1);
+$day1_esc = mysqli_real_escape_string($db, $day1);
+$day2_esc = mysqli_real_escape_string($db, $day2);
+
+$where = "where jumunday between '$day1_esc' and '$day2_esc'";
 if ($sel1 !== "") {
-    $where .= " and state=$sel1";
+    $where .= " and state=" . (int)$sel1;
 }
-if ($text1) {
+if ($text1 !== '') {
     switch ($sel2) {
-        case 1: $where .= " and id like '%$text1%'"; break;
-        case 2: $where .= " and o_name like '%$text1%'"; break;
-        case 3: $where .= " and product_names like '%$text1%'"; break;
+        case 1: $where .= " and id like '%$text1_esc%'"; break;
+        case 2: $where .= " and o_name like '%$text1_esc%'"; break;
+        case 3: $where .= " and product_names like '%$text1_esc%'"; break;
     }
 }
 
 $sql = "select * from jumun $where order by jumunday desc, id desc";
-$args = "day1=$day1&day2=$day2&sel1=$sel1&sel2=$sel2&text1=$text1";
+$args = http_build_query(["day1" => $day1, "day2" => $day2, "sel1" => $sel1, "sel2" => $sel2, "text1" => $text1]);
 $result = mypagination($sql, $args, $count, $pagebar);
 ?>
 
@@ -47,10 +55,17 @@ $result = mypagination($sql, $args, $count, $pagebar);
 function go_update(id, pos) {
     let form = document.forms["form1"];
     let state = form["state" + pos].value;
-    let url = `jumun_update.php?id=${id}&state=${state}&page=${form.page.value}` +
-              `&sel1=${form.sel1.value}&sel2=${form.sel2.value}&text1=${form.text1.value}` +
-              `&day1=${form.day1.value}&day2=${form.day2.value}`;
-    location.href = url;
+    let params = new URLSearchParams({
+        id: id,
+        state: state,
+        page: form.page.value,
+        sel1: form.sel1.value,
+        sel2: form.sel2.value,
+        text1: form.text1.value,
+        day1: form.day1.value,
+        day2: form.day2.value
+    });
+    location.href = `jumun_update.php?${params.toString()}`;
 }
 </script>
 

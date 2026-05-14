@@ -101,7 +101,7 @@ $bank_info = array(
 	{
 		global $db, $page_line, $page_block;			// 서버DB 정보
 
-		$page = isset($_REQUEST["page"]) ? $_REQUEST["page"] : 1; // page초기화
+		$page = isset($_REQUEST["page"]) ? max(1, (int)$_REQUEST["page"]) : 1; // page초기화
 		
 		$url=basename($_SERVER['PHP_SELF']) . "?" . $args;    // 문서이름?전송할 변수들
 		
@@ -109,7 +109,7 @@ $bank_info = array(
 		$sql = strtolower( $query );
 		$sql ="select count(*) " . substr($sql, strpos($sql,"from"));
 		$result=mysqli_query($db, $sql);
-		if (!$result) exit("에러: $sql <br>" . mysqli_error($db));
+		if (!$result) exit("데이터 조회 중 오류가 발생했습니다.");
 		$row=mysqli_fetch_array($result);
 		$count = $row[0];
 
@@ -119,7 +119,7 @@ $bank_info = array(
 		$sql = str_replace(";", "", $query);
 		$sql .= " limit $first, $page_line";
 		$result=mysqli_query($db, $sql);
-		if (!$result) exit("에러: $sql <br>" . mysqli_error($db));
+		if (!$result) exit("데이터 조회 중 오류가 발생했습니다.");
 
 		// pagebar html
 		$pages = ceil($count/$page_line);				// 페이지수

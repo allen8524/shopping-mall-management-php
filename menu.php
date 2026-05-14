@@ -1,9 +1,11 @@
 <?php
 include "main_top.php";
 
-$sort = $_GET['sort'] ?? 1;
-$menu = $_GET['menu'] ?? 0;
-$page = $_GET['page'] ?? 1;
+$sort = (int)($_GET['sort'] ?? 1);
+$menu = (int)($_GET['menu'] ?? 0);
+$page = max(1, (int)($_GET['page'] ?? 1));
+if ($sort < 1 || $sort > 5) $sort = 1;
+if ($menu < 0 || $menu >= $n_menu) $menu = 0;
 
 $order = "order by id desc";
 switch ($sort) {
@@ -13,9 +15,9 @@ switch ($sort) {
 	case 5: $order = "order by price desc"; break;
 }
 
-$condition = ($menu > 0) ? "where menu = $menu" : "";
+$condition = ($menu > 0) ? "where menu = " . (int)$menu : "";
 $sql = "select * from product $condition $order";
-$args = "sort=$sort&menu=$menu";
+$args = http_build_query(["sort" => $sort, "menu" => $menu]);
 $result = mypagination($sql, $args, $total, $pagebar);
 ?>
 <!doctype html>

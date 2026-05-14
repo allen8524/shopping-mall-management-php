@@ -1,12 +1,13 @@
 <?php
 include "main_top.php";
 
-$find_text = $_POST['find_text'] ?? '';
+$find_text = $_POST['find_text'] ?? ($_GET['find_text'] ?? '');
 $text = trim($find_text);
-$page = $_REQUEST['page'] ?? 1;
-$args = "find_text=$text";
+$text_esc = mysqli_real_escape_string($db, $text);
+$page = max(1, (int)($_REQUEST['page'] ?? 1));
+$args = http_build_query(["find_text" => $text]);
 
-$where = $text ? "where name like '%$text%'" : "";
+$where = $text !== '' ? "where name like '%$text_esc%'" : "";
 $sql = "select * from product $where order by name";
 $result = mypagination($sql, $args, $count, $pagebar);
 ?>
@@ -41,14 +42,14 @@ $result = mypagination($sql, $args, $count, $pagebar);
 <?php while ($row = mysqli_fetch_array($result)): ?>
 			<tr height="85" style="font-size:14px;">
 				<td>
-					<a href="product.php?id=<?=$row['id']?>"><img src="product/<?=($row['image1'] ?: 'nopic.png')?>" width="60" height="70"></a>
+					<a href="product.php?id=<?=(int)$row['id']?>"><img src="product/<?=htmlspecialchars($row['image1'] ?: 'nopic.png')?>" width="60" height="70"></a>
 				</td>
 				<td align="left" valign="middle">
-					<a href="product.php?id=<?=$row['id']?>" style="color:#0066CC"><?=$row['name']?></a><br>
+					<a href="product.php?id=<?=(int)$row['id']?>" style="color:#0066CC"><?=htmlspecialchars($row['name'])?></a><br>
 					<?php
 					if ($row['icon_new']) echo "<img src='images/i_new.gif'> ";
 					if ($row['icon_hit']) echo "<img src='images/i_hit.gif'> ";
-					if ($row['icon_sale']) echo "<img src='images/i_sale.gif'> <font size='2' color='red'>{$row['discount']}%</font>";
+					if ($row['icon_sale']) echo "<img src='images/i_sale.gif'> <font size='2' color='red'>" . (int)$row['discount'] . "%</font>";
 					?>
 				</td>
 				<td>

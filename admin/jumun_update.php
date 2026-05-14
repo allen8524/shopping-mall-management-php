@@ -3,25 +3,40 @@ include "login_main_check.php";
 include "../common.php";
 
 // 파라미터 받기
-$id    = $_REQUEST["id"]    ?? "";
-$state = $_REQUEST["state"] ?? "";
-$page  = $_REQUEST["page"]  ?? 1;
-$sel1  = $_REQUEST["sel1"]  ?? "";
-$sel2  = $_REQUEST["sel2"]  ?? 1;
-$text1 = $_REQUEST["text1"] ?? "";
-$day1  = $_REQUEST["day1"]  ?? date("Y-m-01");
-$day2  = $_REQUEST["day2"]  ?? date("Y-m-d");
+$id    = trim($_REQUEST["id"] ?? "");
+$state = (int)($_REQUEST["state"] ?? -1);
+$page  = max(1, (int)($_REQUEST["page"] ?? 1));
+$sel1  = $_REQUEST["sel1"] ?? "";
+$sel2  = (int)($_REQUEST["sel2"] ?? 1);
+$text1 = trim($_REQUEST["text1"] ?? "");
+$day1  = $_REQUEST["day1"] ?? date("Y-m-01");
+$day2  = $_REQUEST["day2"] ?? date("Y-m-d");
 
-// 필수 파라미터 누락 시 차단
-if ($id === "" || $state === "") {
-    echo "<script>alert('잘못된 접근입니다.'); history.back();</script>";
+$sel1 = in_array((string)$sel1, ["", "0", "1", "2", "3", "4", "5"], true) ? (string)$sel1 : "";
+$sel2 = in_array($sel2, [1, 2, 3], true) ? $sel2 : 1;
+$day1 = preg_match('/^\d{4}-\d{2}-\d{2}$/', $day1) ? $day1 : date("Y-m-01");
+$day2 = preg_match('/^\d{4}-\d{2}-\d{2}$/', $day2) ? $day2 : date("Y-m-d");
+
+$params = [
+    "page" => $page,
+    "sel1" => $sel1,
+    "sel2" => $sel2,
+    "text1" => $text1,
+    "day1" => $day1,
+    "day2" => $day2,
+];
+$redirect_url = "jumun.php?" . http_build_query($params);
+
+// 필수 파라미터 누락 또는 허용되지 않은 상태값 차단
+if (!preg_match('/^\d{10}$/', $id) || $state < 0 || $state > 5) {
+    header("Location: $redirect_url");
     exit;
 }
 
-// 상태 업데이트 쿼리 실행
-$query = "UPDATE jumun SET state = $state WHERE id = $id";
-mysqli_query($db, $query);
+$stmt = mysqli_prepare($db, "UPDATE jumun SET state = ? WHERE id = ?");
+mysqli_stmt_bind_param($stmt, "is", $state, $id);
+mysqli_stmt_execute($stmt);
 
 // 목록 페이지로 리다이렉트 (파라미터 유지)
-$url = "jumun.php?page=$page&sel1=$sel1&sel2=$sel2&text1=$text1&day1=$day1&day2=$day2";
-echo "<script>location.href='$url';</script>";
+header("Location: $redirect_url");
+exit;
