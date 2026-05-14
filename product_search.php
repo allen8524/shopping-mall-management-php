@@ -11,20 +11,6 @@ $where = $text !== '' ? "where name like '%$text_esc%'" : "";
 $sql = "select * from product $where order by name";
 $result = mypagination($sql, $args, $count, $pagebar);
 ?>
-<!doctype html>
-<html lang="kr">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link  href="css/bootstrap.min.css" rel="stylesheet">
-	<link  href="css/my.css" rel="stylesheet">
-	<script src="js/jquery-3.7.1.min.js"></script>
-	<script src="js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-
-<div class="container">
-
 
 <div class="row m-1 mt-4 mb-0">
 	<div class="col" align="center">
@@ -42,10 +28,10 @@ $result = mypagination($sql, $args, $count, $pagebar);
 <?php while ($row = mysqli_fetch_array($result)): ?>
 			<tr height="85" style="font-size:14px;">
 				<td>
-					<a href="product.php?id=<?=(int)$row['id']?>"><img src="product/<?=htmlspecialchars($row['image1'] ?: 'nopic.png')?>" width="60" height="70"></a>
+					<a href="product.php?id=<?=(int)$row['id']?>"><img src="product/<?=htmlspecialchars($row['image1'] ?: 'nopic.png', ENT_QUOTES, 'UTF-8')?>" width="60" height="70"></a>
 				</td>
 				<td align="left" valign="middle">
-					<a href="product.php?id=<?=(int)$row['id']?>" style="color:#0066CC"><?=htmlspecialchars($row['name'])?></a><br>
+					<a href="product.php?id=<?=(int)$row['id']?>" style="color:#0066CC"><?=htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8')?></a><br>
 					<?php
 					if ($row['icon_new']) echo "<img src='images/i_new.gif'> ";
 					if ($row['icon_hit']) echo "<img src='images/i_hit.gif'> ";
@@ -54,12 +40,12 @@ $result = mypagination($sql, $args, $count, $pagebar);
 				</td>
 				<td>
 					<?php if ($row['icon_sale']): ?>
-						<strike><?=number_format($row['price'])?> 원</strike>
+						<strike><?=number_format((int)$row['price'])?> 원</strike>
 					<?php else: ?>
-						<?=number_format($row['price'])?> 원
+						<?=number_format((int)$row['price'])?> 원
 					<?php endif; ?>
 				</td>
-				<td><b><?=number_format($row['price'] * (100 - $row['discount']) / 100)?> 원</b></td>
+				<td><b><?=number_format((int)round((int)$row['price'] * (100 - (int)$row['discount']) / 100))?> 원</b></td>
 			</tr>
 <?php endwhile; ?>
 		</table>
@@ -74,7 +60,3 @@ $result = mypagination($sql, $args, $count, $pagebar);
 
 <br><br><br>
 <?php include "main_bottom.php"; ?>
-</div>
-
-</body>
-</html>

@@ -1,17 +1,3 @@
-<!doctype html>
-<html lang="kr">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link  href="css/bootstrap.min.css" rel="stylesheet">
-	<link  href="css/my.css" rel="stylesheet">
-	<script src="js/jquery-3.7.1.min.js"></script>
-	<script src="js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-
-
-
 <!-------------------------------------------------------------------------------------------->
 <!-- 끝 : 다른 웹페이지 삽입할 부분 -->
 <!-------------------------------------------------------------------------------------------->
@@ -44,17 +30,6 @@
   <a href="useinfo.php" class="text-white">이용안내</a> |
   <a href="policy.php" class="text-white">개인정보정책</a> |
   <a href="admin/index.html" class="text-white">Admin</a>
-
-<style>
-  .footer-logo {
-    height: 25px;
-    transition: transform 0.3s ease;
-  }
-  .footer-logo:hover {
-    transform: scale(1.05);
-    filter: brightness(1.1) drop-shadow(0 0 5px rgba(255,255,255,0.5));
-  }
-</style>
 
 
   <div class="mt-2">

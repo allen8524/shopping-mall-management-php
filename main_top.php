@@ -8,9 +8,11 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/my.css" rel="stylesheet">
   <link href="css/weather.css" rel="stylesheet"> <!-- 날씨 전용 CSS -->
+  <link href="css/footer.css" rel="stylesheet">
   <script src="js/jquery-3.7.1.min.js"></script>
   <script src="js/bootstrap.bundle.min.js"></script>
   <link href="css/header.css" rel="stylesheet">
+  <link href="css/all.css" rel="stylesheet">
 
 
 
@@ -185,7 +187,7 @@
       <ul class="nav me-auto nav-glow"><!-- nav-glow 클래스 추가 -->
 <?php
   for ($i = 1; $i < $n_menu; $i++) {
-    $name = $a_menu[$i];
+    $name = htmlspecialchars($a_menu[$i], ENT_QUOTES, 'UTF-8');
     echo "<li class='nav-item zoom_a'>
             <a class='nav-link text-white' style='font-size:15px;' href='menu.php?menu=$i'>$name</a>
           </li>";
@@ -219,5 +221,3 @@
   }
 </script>
 <script src="js/app.js"></script> <!-- 날씨용 JS -->
-</body>
-</html>

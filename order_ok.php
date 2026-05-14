@@ -224,15 +224,6 @@ try {
 include "main_top.php";
 ?>
 
-<!doctype html>
-<html lang="kr">
-<head>
-    <meta charset="utf-8">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/my.css" rel="stylesheet">
-</head>
-<body>
-<div class="container">
     <div class="row m-5 mb-0">
         <div class="col text-center">
             <h4><?= $error_message ? '주문 오류' : '주문 완료' ?></h4>
@@ -259,6 +250,3 @@ include "main_top.php";
     </div>
     <br><br><br>
     <?php include "main_bottom.php"; ?>
-</div>
-</body>
-</html>
