@@ -1,6 +1,7 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
 
 $sel1 = (int)($_REQUEST["sel1"] ?? 0);
 $sel2 = (int)($_REQUEST["sel2"] ?? 0);
@@ -153,7 +154,11 @@ for ($i = 1; $i < $n_text1; $i++) {
 			<td><?=$event?></td>
 			<td>
 				<a href="product_edit.php?id=<?=$row["id"]?>&<?=$args?>&page=<?=$page?>" class="btn btn-sm btn-outline-info mybutton-blue">수정</a>
-				<a href="product_delete.php?id=<?=$row["id"]?>&<?=$args?>&page=<?=$page?>" class="btn btn-sm btn-outline-danger mybutton-red" onclick="return confirm('삭제할까요?');">삭제</a>
+				<form method="post" action="product_delete.php" class="d-inline" onsubmit="return confirm('삭제할까요?');">
+					<?= admin_csrf_input() ?>
+					<input type="hidden" name="id" value="<?=$row["id"]?>">
+					<button type="submit" class="btn btn-sm btn-outline-danger mybutton-red">삭제</button>
+				</form>
 			</td>
 		</tr>
 <?php } ?>

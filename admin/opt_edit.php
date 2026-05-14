@@ -1,12 +1,32 @@
-<?
-	include "login_main_check.php";
-	include "../common.php";
-	
-	$id = $_REQUEST["id"];
-	$sql = "SELECT * FROM opt WHERE id = '$id'";
-	$result = mysqli_query($db, $sql);
+<?php
+include "login_main_check.php";
+include "../common.php";
+include "csrf.php";
 
-	$row = mysqli_fetch_assoc($result);
+$id = (int)($_GET['id'] ?? 0);
+if ($id <= 0) {
+    header('Location: opt.php');
+    exit;
+}
+
+$stmt = mysqli_prepare($db, "SELECT * FROM opt WHERE id = ?");
+if (!$stmt) {
+    error_log('Option edit prepare failed: ' . mysqli_error($db));
+    exit('옵션 정보를 조회할 수 없습니다.');
+}
+mysqli_stmt_bind_param($stmt, 'i', $id);
+if (!mysqli_stmt_execute($stmt)) {
+    error_log('Option edit execute failed: ' . mysqli_stmt_error($stmt));
+    mysqli_stmt_close($stmt);
+    exit('옵션 정보를 조회할 수 없습니다.');
+}
+$result = mysqli_stmt_get_result($stmt);
+$row = $result ? mysqli_fetch_assoc($result) : null;
+mysqli_stmt_close($stmt);
+if (!$row) {
+    header('Location: opt.php');
+    exit;
+}
 ?>
 <!doctype html>
 <html lang="kr">
@@ -29,6 +49,7 @@
 <!-------------------------------------------------------------------------------------------->	
 
 <form name="form1" method="post" action="opt_update.php">
+<?= admin_csrf_input() ?>
 
 <input type="hidden" name="id" value="<?= $id ?>">
 

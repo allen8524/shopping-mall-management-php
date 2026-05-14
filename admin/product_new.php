@@ -1,6 +1,7 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
 $rs_opt = mysqli_query($db, "SELECT id, name FROM opt ORDER BY id");
 $a_opt = [0 => '옵션 선택'];
 while ($ro = mysqli_fetch_assoc($rs_opt)) {
@@ -66,6 +67,7 @@ while ($ro = mysqli_fetch_assoc($rs_opt)) {
 <script> document.write(admin_menu());</script>
 
 <form name="form1" method="post" action="product_insert.php" enctype="multipart/form-data" onsubmit="return checkForm()">
+<?= admin_csrf_input() ?>
 
 <div class="row mx-1 justify-content-center">
 	<div class="col" align="center">

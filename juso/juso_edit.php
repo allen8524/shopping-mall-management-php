@@ -1,11 +1,11 @@
-<?
+<?php
 	include "common.php";
 	
-	$id=$_REQUEST["id"];
+	$id=(int)($_REQUEST["id"] ?? 0);
 	
 	$sql="select * from juso where id=$id";
 	$result=mysqli_query($db,$sql);
-	if (!$result) exit("에러: $sql");
+	if (!$result) { error_log("Juso edit query failed: " . mysqli_error($db)); exit("주소 정보를 조회할 수 없습니다."); }
 
 	$row=mysqli_fetch_array($result);
 

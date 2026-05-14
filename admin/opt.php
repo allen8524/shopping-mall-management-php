@@ -1,11 +1,13 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
 
-$text1 = $_REQUEST["text1"] ?? "";
+$text1 = trim($_REQUEST["text1"] ?? "");
+$text1_esc = mysqli_real_escape_string($db, $text1);
 
-$sql = "SELECT * FROM opt WHERE id LIKE '%$text1%' ORDER BY id";
-$args = "text1=$text1";
+$sql = "SELECT * FROM opt WHERE id LIKE '%$text1_esc%' ORDER BY id";
+$args = "text1=" . urlencode($text1);
 $result = mypagination($sql, $args, $count, $pagebar);
 ?>
 
@@ -25,9 +27,9 @@ $result = mypagination($sql, $args, $count, $pagebar);
 <body>
 
 <div class="container">
-<!-------------------------------------------------------------------------------------------->	
+<!-------------------------------------------------------------------------------------------->
 <script> document.write(admin_menu());</script>
-<!-------------------------------------------------------------------------------------------->	
+<!-------------------------------------------------------------------------------------------->
 
 <div class="row mx-1  justify-content-center">
 	<div class="col-sm-10" align="center">
@@ -51,7 +53,7 @@ $result = mypagination($sql, $args, $count, $pagebar);
 				<td width="25%">수정 / 삭제</td>
 				<td width="25%">소옵션 편집</td>
 			</tr>
-<?
+<?php
 	foreach ($result as $row)
 	{
 		$id=$row["id"];
@@ -61,23 +63,26 @@ $result = mypagination($sql, $args, $count, $pagebar);
 				<td><?=$row["name"]; ?></td>
 				<td>
 					<a href="opt_edit.php?id=<?=$id; ?>" class="btn btn-sm mybutton-blue">수정</a>
-					<a href="opt_delete.php?id=<?=$id; ?>" class="btn btn-sm mybutton-red" 
-						onclick="javascript:return confirm('삭제할까요 ?');">삭제</a>				
+					<form method="post" action="opt_delete.php" class="d-inline" onsubmit="return confirm('삭제할까요 ?');">
+						<?= admin_csrf_input() ?>
+						<input type="hidden" name="id" value="<?=$id; ?>">
+						<button type="submit" class="btn btn-sm mybutton-red">삭제</button>
+					</form>
 				</td>
 				<td>
 					<a href="opts.php?id=<?=$id; ?>" class="btn btn-sm mybutton-gray">소옵션 편집</a>
 				</td>
 			</tr>
-<?
+<?php
 	}
 ?>
 		</table>
-<?
+<?php
 	echo $pagebar;
 ?>
 	</div>
 </div>
-<!-------------------------------------------------------------------------------------------->	
+<!-------------------------------------------------------------------------------------------->
 </div>
 
 </body>

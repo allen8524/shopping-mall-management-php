@@ -1,15 +1,34 @@
 <?php
-	include "login_main_check.php";
-	include "../common.php";
+include "login_main_check.php";
+include "../common.php";
+include "csrf.php";
 
-	$id1 = $_REQUEST["id"];  // 실제 소옵션 ID (opts 테이블의 id)
-	
-	// 해당 소옵션 정보 가져오기
-	$sql = "SELECT * FROM opts WHERE id = '$id1'";
-	$result = mysqli_query($db, $sql);
-	$row = mysqli_fetch_assoc($result);
+$id1 = (int)($_GET['id'] ?? 0);
+if ($id1 <= 0) {
+    header('Location: opt.php');
+    exit;
+}
 
-	$opt_id = $row["opt_id"];  // 소속된 옵션 ID (리다이렉트용)
+$stmt = mysqli_prepare($db, "SELECT * FROM opts WHERE id = ?");
+if (!$stmt) {
+    error_log('Sub option edit prepare failed: ' . mysqli_error($db));
+    exit('소옵션 정보를 조회할 수 없습니다.');
+}
+mysqli_stmt_bind_param($stmt, 'i', $id1);
+if (!mysqli_stmt_execute($stmt)) {
+    error_log('Sub option edit execute failed: ' . mysqli_stmt_error($stmt));
+    mysqli_stmt_close($stmt);
+    exit('소옵션 정보를 조회할 수 없습니다.');
+}
+$result = mysqli_stmt_get_result($stmt);
+$row = $result ? mysqli_fetch_assoc($result) : null;
+mysqli_stmt_close($stmt);
+if (!$row) {
+    header('Location: opt.php');
+    exit;
+}
+
+$opt_id = (int)$row["opt_id"];
 ?>
 <!doctype html>
 <html lang="kr">
@@ -31,6 +50,7 @@
 <!-------------------------------------------------------------------------------------------->	
 
 <form name="form1" method="post" action="opts_update.php">
+<?= admin_csrf_input() ?>
 	<input type="hidden" name="id" value="<?= $opt_id; ?>">   <!-- 상위 옵션 ID -->
 	<input type="hidden" name="id1" value="<?= $id1; ?>">     <!-- 소옵션 ID -->
 

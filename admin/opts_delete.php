@@ -1,8 +1,10 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
+admin_require_post_csrf('opts.php');
 
-$id = isset($_POST['id']) ? (int)$_POST['id'] : (isset($_GET['id']) ? (int)$_GET['id'] : 0);
+$id = (int)($_POST['id'] ?? 0);
 if ($id <= 0) {
     header('Location: opts.php');
     exit;

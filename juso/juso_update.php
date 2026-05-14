@@ -1,7 +1,7 @@
-<?
+<?php
     include "common.php";
 
-    $id=$_REQUEST["id"];
+    $id=(int)($_REQUEST["id"] ?? 0);
     $name = $_REQUEST["name"];
     $tel1 = $_REQUEST["tel1"];
     $tel2 = $_REQUEST["tel2"];
@@ -19,6 +19,6 @@
     $sql="update juso set name='$name', tel='$tel', sm='$sm', birthday='$birthday',
                 juso='$juso' where id=$id";
     $result=mysqli_query($db, $sql);
-    if (!$result) exit("에러: $sql");
+    if (!$result) { error_log("Juso update failed: " . mysqli_error($db)); exit("주소 수정 처리 중 오류가 발생했습니다."); }
 
     echo("<script>location.href='juso_list.php'</script>");

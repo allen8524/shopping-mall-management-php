@@ -1,6 +1,7 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
 ?>
 <!doctype html>
 <html lang="kr">
@@ -52,14 +53,14 @@ include "../common.php";
 		<?php
 		if ($total > 0) {
 			while ($row = mysqli_fetch_array($result)) {
-				$id = $row["id"];
+				$id = (int)$row["id"];
 				$ask = htmlspecialchars($row["ask"]);
 				echo "<tr>
 						<td>{$id}</td>
 						<td align='left'>{$ask}</td>
 						<td>
 							<a href='faq_edit.php?id={$id}' class='btn btn-sm mybutton-blue'>수정</a>
-							<a href='faq_delete.php?id={$id}' class='btn btn-sm mybutton-red' onclick='return confirm(\"삭제할까요?\");'>삭제</a>
+							<form method='post' action='faq_delete.php' class='d-inline' onsubmit='return confirm(\"삭제할까요?\");'>" . admin_csrf_input() . "<input type='hidden' name='id' value='{$id}'><button type='submit' class='btn btn-sm mybutton-red'>삭제</button></form>
 						</td>
 					  </tr>";
 			}

@@ -1,5 +1,6 @@
 <?php
 	include "login_main_check.php";
+include "csrf.php";
 ?>
 
 <!doctype html>
@@ -23,6 +24,7 @@
 <!-------------------------------------------------------------------------------------------->	
 
 <form name="form1" method="post" action="opt_insert.php">
+<?= admin_csrf_input() ?>
 
 <div class="row mx-1  justify-content-center">
 	<div class="col-sm-10" align="center">

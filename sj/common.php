@@ -1,4 +1,4 @@
-<?
+<?php
 
 	$db= mysqli_connect("localhost", "shop62","1234","shop62");
 	if(!$db) exit("DB연결에러");
@@ -10,7 +10,7 @@
 	{
 		global $db, $page_line, $page_block;			// 서버DB 정보
 
-		$page=$_REQUEST["page"] ? $_REQUEST["page"] : 1;	// page초기화
+		$page = max(1, (int)($_REQUEST["page"] ?? 1));	// page초기화
 		
 		$url=basename($_SERVER['PHP_SELF']) . "?" . $args;    // 문서이름?전송할 변수들
 		
@@ -18,7 +18,7 @@
 		$sql = strtolower( $query );
 		$sql ="select count(*) " . substr($sql, strpos($sql,"from"));
 		$result=mysqli_query($db, $sql);
-		if (!$result) exit("에러: $sql <br>" . mysqli_error($db));
+		if (!$result) { error_log("Pagination query failed: " . mysqli_error($db)); exit("목록을 조회할 수 없습니다."); }
 		$row=mysqli_fetch_array($result);
 		$count = $row[0];
 
@@ -28,7 +28,7 @@
 		$sql = str_replace(";", "", $query);
 		$sql .= " limit $first, $page_line";
 		$result=mysqli_query($db, $sql);
-		if (!$result) exit("에러: $sql <br>" . mysqli_error($db));
+		if (!$result) { error_log("Pagination query failed: " . mysqli_error($db)); exit("목록을 조회할 수 없습니다."); }
 
 		// pagebar html
 		$pages = ceil($count/$page_line);				// 페이지수

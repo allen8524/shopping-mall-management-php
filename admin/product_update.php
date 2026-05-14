@@ -1,6 +1,8 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
+admin_require_post_csrf('product.php');
 
 function clean_product_image_name($name) {
     $name = trim((string)$name);

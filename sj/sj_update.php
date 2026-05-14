@@ -1,16 +1,16 @@
-<?
+<?php
 	include "common.php";
 	
-	$id=$_REQUEST["id"];
+	$id=(int)($_REQUEST["id"] ?? 0);
 	$name=$_REQUEST["name"];
-	$kor=$_REQUEST["kor"];
-	$eng=$_REQUEST["eng"];
-	$mat=$_REQUEST["mat"];
-	$hap=$_REQUEST["hap"];
-	$avg=$_REQUEST["avg"];
+	$kor=(int)($_REQUEST["kor"] ?? 0);
+	$eng=(int)($_REQUEST["eng"] ?? 0);
+	$mat=(int)($_REQUEST["mat"] ?? 0);
+	$hap=(int)($_REQUEST["hap"] ?? 0);
+	$avg=(float)($_REQUEST["avg"] ?? 0);
 	
 	$sql="update sj set name='$name', kor=$kor, eng=$eng, mat=$mat, hap=$hap, avg=$avg where id=$id";
 	$result=mysqli_query($db, $sql);
-	if (!$result) exit("에러 : $sql");
+	if (!$result) { error_log("Score update failed: " . mysqli_error($db)); exit("성적 수정 처리 중 오류가 발생했습니다."); }
 	
 	echo("<script>location.href='sj_list.php'</script>");

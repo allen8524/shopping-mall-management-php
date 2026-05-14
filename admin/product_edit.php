@@ -1,6 +1,7 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
 
 // 1. id 검증
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -36,6 +37,7 @@ mysqli_stmt_close($stmt);
 <script> document.write(admin_menu()); </script>
 
 <form name="form1" method="post" action="product_update.php" enctype="multipart/form-data">
+<?= admin_csrf_input() ?>
 <input type="hidden" name="id" value="<?= $id ?>">
 
 <div class="row mx-1 justify-content-center">

@@ -1,6 +1,8 @@
 <?php
 include "login_main_check.php";
 include "../common.php";
+include "csrf.php";
+admin_require_post_csrf('jumun.php');
 
 // 파라미터 받기
 $id    = trim($_REQUEST["id"] ?? "");
