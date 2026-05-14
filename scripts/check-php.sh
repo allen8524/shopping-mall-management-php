@@ -21,7 +21,16 @@ php_files=(
   admin/jumun_update.php
   admin/jumun_delete.php
   admin/faq_delete.php
+  member_insert.php
+  member_update.php
+  qa_insert.php
+  qa_update.php
+  qa_delete.php
+  juso/juso_insert.php
+  juso/juso_update.php
   juso/juso_delete.php
+  sj/sj_insert.php
+  sj/sj_update.php
   sj/sj_delete.php
   order_ok.php
   cart_edit.php

@@ -1,8 +1,5 @@
 <?php
 include "common.php"; // DB 연결 포함
-// 에러 표시
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 // 1) POST 값 가져오기
 $page          = isset($_POST['page'])     ? (int)$_POST['page']    : 1;
