@@ -13,6 +13,7 @@ $sel2 = ($sel2 >= 0 && $sel2 <= 3) ? $sel2 : 0;
 $sel3 = ($sel3 >= 0 && $sel3 < $n_menu) ? $sel3 : 0;
 $sel4 = ($sel4 === 2) ? 2 : 1;
 $text1_esc = mysqli_real_escape_string($db, $text1);
+$text1_html = htmlspecialchars($text1, ENT_QUOTES, 'UTF-8');
 
 $s = array(); $k = 0;
 if ($sel1 != 0) $s[$k++] = "status=" . (int)$sel1;
@@ -113,7 +114,7 @@ for ($i = 1; $i < $n_text1; $i++) {
 				</div>
 				<div class="d-inline-flex">
 					<div class="input-group input-group-sm">
-						<input type="text" name="text1" value="<?=$text1?>" size="10" class="form-control myfs12" onKeydown="if (event.keyCode == 13) { form1.submit(); }">
+						<input type="text" name="text1" value="<?=$text1_html?>" size="10" class="form-control myfs12" onKeydown="if (event.keyCode == 13) { form1.submit(); }">
 						<button class="btn mycolor1 myfs12" type="button" onClick="form1.submit();">검색</button>
 					</div>
 				</div>
@@ -137,26 +138,32 @@ for ($i = 1; $i < $n_text1; $i++) {
 			<td width="10%">수정/삭제</td>
 		</tr>
 <?php while ($row = mysqli_fetch_array($result)) {
-	$price = number_format($row["price"]);
-	$menu = $a_menu[$row["menu"]];
-	$status = $a_status[$row["status"]];
+	$id = (int)$row["id"];
+	$price = number_format((int)$row["price"]);
+	$discount = (int)$row["discount"];
+	$menu = htmlspecialchars($a_menu[(int)$row["menu"]] ?? '', ENT_QUOTES, 'UTF-8');
+	$status = htmlspecialchars($a_status[(int)$row["status"]] ?? '', ENT_QUOTES, 'UTF-8');
+	$code = htmlspecialchars($row["code"], ENT_QUOTES, 'UTF-8');
+	$name = htmlspecialchars($row["name"], ENT_QUOTES, 'UTF-8');
 	$event = "";
 	if ($row["icon_new"] == 1) $event .= "New ";
 	if ($row["icon_hit"] == 1) $event .= "Hit ";
-	if ($row["icon_sale"] == 1) $event .= "Sale({$row["discount"]}%)";
+	if ($row["icon_sale"] == 1) $event .= "Sale({$discount}%)";
+	$event = htmlspecialchars($event, ENT_QUOTES, 'UTF-8');
+	$edit_page = max(1, (int)$page);
 ?>
 		<tr>
 			<td><?=$menu?></td>
-			<td><?=$row["code"]?></td>
-			<td align="left"><?=$row["name"]?></td>
+			<td><?=$code?></td>
+			<td align="left"><?=$name?></td>
 			<td align="right" class="px-2"><?=$price?></td>
 			<td><?=$status?></td>
 			<td><?=$event?></td>
 			<td>
-				<a href="product_edit.php?id=<?=$row["id"]?>&<?=$args?>&page=<?=$page?>" class="btn btn-sm btn-outline-info mybutton-blue">수정</a>
+				<a href="product_edit.php?id=<?=$id?>&<?=$args?>&page=<?=$edit_page?>" class="btn btn-sm btn-outline-info mybutton-blue">수정</a>
 				<form method="post" action="product_delete.php" class="d-inline" onsubmit="return confirm('삭제할까요?');">
 					<?= admin_csrf_input() ?>
-					<input type="hidden" name="id" value="<?=$row["id"]?>">
+					<input type="hidden" name="id" value="<?=$id?>">
 					<button type="submit" class="btn btn-sm btn-outline-danger mybutton-red">삭제</button>
 				</form>
 			</td>

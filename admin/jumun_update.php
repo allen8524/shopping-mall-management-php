@@ -5,14 +5,14 @@ include "csrf.php";
 admin_require_post_csrf('jumun.php');
 
 // 파라미터 받기
-$id    = trim($_REQUEST["id"] ?? "");
-$state = (int)($_REQUEST["state"] ?? -1);
-$page  = max(1, (int)($_REQUEST["page"] ?? 1));
-$sel1  = $_REQUEST["sel1"] ?? "";
-$sel2  = (int)($_REQUEST["sel2"] ?? 1);
-$text1 = trim($_REQUEST["text1"] ?? "");
-$day1  = $_REQUEST["day1"] ?? date("Y-m-01");
-$day2  = $_REQUEST["day2"] ?? date("Y-m-d");
+$id    = trim($_POST["id"] ?? "");
+$state = (int)($_POST["state"] ?? -1);
+$page  = max(1, (int)($_POST["page"] ?? 1));
+$sel1  = $_POST["sel1"] ?? "";
+$sel2  = (int)($_POST["sel2"] ?? 1);
+$text1 = trim($_POST["text1"] ?? "");
+$day1  = $_POST["day1"] ?? date("Y-m-01");
+$day2  = $_POST["day2"] ?? date("Y-m-d");
 
 $sel1 = in_array((string)$sel1, ["", "0", "1", "2", "3", "4", "5"], true) ? (string)$sel1 : "";
 $sel2 = in_array($sel2, [1, 2, 3], true) ? $sel2 : 1;

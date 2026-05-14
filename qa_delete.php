@@ -37,7 +37,8 @@ $sql = "
        AND pos2 LIKE '" . mysqli_real_escape_string($db, $prefix) . "%'
 ";
 if (!mysqli_query($db, $sql)) {
-    exit("DB 에러(DELETE): " . mysqli_error($db));
+    error_log('QA delete failed: ' . mysqli_error($db));
+    exit('게시글 삭제 처리 중 오류가 발생했습니다.');
 }
 
 // 5) 목록으로 이동 (검색·페이징 유지)
