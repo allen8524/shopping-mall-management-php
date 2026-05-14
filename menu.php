@@ -20,34 +20,19 @@ $sql = "select * from product $condition $order";
 $args = http_build_query(["sort" => $sort, "menu" => $menu]);
 $result = mypagination($sql, $args, $total, $pagebar);
 ?>
-<!doctype html>
-<html lang="kr">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link  href="css/bootstrap.min.css" rel="stylesheet">
-	<link  href="css/my.css" rel="stylesheet">
-	<script src="js/jquery-3.7.1.min.js"></script>
-	<script src="js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-
-<div class="container">
-
 
 <!--  Category 제목 -->
 <div class="row mt-5 mb-1"
      style="color: #bdfe01; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);">
 	<div class="col" align="center">
-		<h2><?= $menu > 0 ? $a_menu[$menu] : "전체 상품" ?></h2>
+		<h2><?= $menu > 0 ? htmlspecialchars($a_menu[$menu], ENT_QUOTES, 'UTF-8') : "전체 상품" ?></h2>
 	</div>
 </div>
 
 <!--  상품개수 & 정렬 -->
 <div class="row m-0">
 	<div class="col-2" align="left" style="font-size:15px">
-		Total <?=$total?> items!
+		Total <?=(int)$total?> items!
 	</div>
 	<div class="col" align="right" style="font-size:12px">
 		<a href="menu.php?menu=<?=$menu?>&sort=1"><font color='<?=($sort==1 ? "steelblue" : "black")?>'>신상품</font></a>&nbsp;|
@@ -65,25 +50,25 @@ $result = mypagination($sql, $args, $total, $pagebar);
 	<div class="col-sm-3 mb-3">
 		<div class="card h-100">
 			<div class="shine-wrapper" align="center">
-				<a href="product.php?id=<?=$row['id']?>">
-					<img src="product/<?=($row['image1'] ?: 'nopic.png')?>" height="360" class="card-img-top img-fluid">
+				<a href="product.php?id=<?=(int)$row['id']?>">
+					<img src="product/<?=htmlspecialchars($row['image1'] ?: 'nopic.png', ENT_QUOTES, 'UTF-8')?>" height="360" class="card-img-top img-fluid">
 				</a>
 			</div>
 			<div class="card-body text-center" style="font-size:15px; background-color:#3f4347;">
 				<div class="card-title">
-					<a href="product.php?id=<?=$row['id']?>"> <?=$row['name']?> </a><br>
+					<a href="product.php?id=<?=(int)$row['id']?>"> <?=htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8')?> </a><br>
 					<?php
 					if ($row['icon_new']) echo "<img src='images/i_new.gif'> ";
 					if ($row['icon_hit']) echo "<img src='images/i_hit.gif'> ";
-					if ($row['icon_sale']) echo "<img src='images/i_sale.gif'> <font size='2' color='red'>{$row['discount']}%</font>";
+					if ($row['icon_sale']) echo "<img src='images/i_sale.gif'> <font size='2' color='red'>" . (int)$row['discount'] . "%</font>";
 					?>
 				</div>
 				<p class="card-text text-white">
 					<?php if ($row['icon_sale']): ?>
-						<small><strike><?=number_format($row['price'])?> 원</strike></small>&nbsp;&nbsp;
-						<?=number_format($row['price'] * (100 - $row['discount']) / 100)?> 원
+						<small><strike><?=number_format((int)$row['price'])?> 원</strike></small>&nbsp;&nbsp;
+						<?=number_format((int)round((int)$row['price'] * (100 - (int)$row['discount']) / 100))?> 원
 					<?php else: ?>
-						<?=number_format($row['price'])?> 원
+						<?=number_format((int)$row['price'])?> 원
 					<?php endif; ?>
 				</p>
 			</div>
@@ -102,6 +87,3 @@ $result = mypagination($sql, $args, $total, $pagebar);
 <?php
 include "main_bottom.php";
 ?>
-</div>
-</body>
-</html>

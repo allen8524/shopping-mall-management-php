@@ -32,7 +32,7 @@
         <div class='d-flex justify-content-center align-items-center my-5'>
             <div class='border rounded-3 shadow-sm p-4 bg-light' style='max-width:400px;'>
                 <h4 class='text-center text-danger mb-2'>
-                    <i class='bi bi-x-circle-fill me-2'></i>{$msg}
+                    <i class='fas fa-times-circle me-2'></i>{$msg}
                 </h4>
                 <p class='text-center text-secondary' style='font-size:14px;'>{$sub}</p>
             </div>
@@ -40,23 +40,14 @@
         include "main_bottom.php";
         exit;
     }
+
+    $product_id = (int)$row['id'];
+    $product_name = htmlspecialchars($row['name'] ?? '', ENT_QUOTES, 'UTF-8');
+    $product_image1 = htmlspecialchars($row['image1'] ?: 'nopic.png', ENT_QUOTES, 'UTF-8');
+    $product_price = (int)$row['price'];
+    $product_discount = (int)$row['discount'];
+    $product_sale_price = (int)round($product_price * (100 - $product_discount) / 100);
 ?>
-
-<!doctype html>
-<html lang="kr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/my.css"         rel="stylesheet">
-    <script src="js/jquery-3.7.1.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-</head>
-<body>
-
-<div class="container">
 
 <script>
 // 수량·금액 계산
@@ -78,9 +69,9 @@ function cal_price() {
 // 폼 유효성 검사
 function check_form2(kind) {
 <?php foreach ($categories as $cat): ?>
-if (form2.opts<?= $cat['id'] ?>.value == 0) {
-    alert("<?= $cat['name'] ?>을(를) 선택하세요.");
-    form2.opts<?= $cat['id'] ?>.focus();
+if (form2.opts<?= (int)$cat['id'] ?>.value == 0) {
+    alert("<?= htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8') ?>을(를) 선택하세요.");
+    form2.opts<?= (int)$cat['id'] ?>.focus();
     return;
 }
 <?php endforeach; ?>
@@ -99,9 +90,9 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
 
 <form name="form2" method="post" action="">
     <input type="hidden" name="kind"     value="insert">
-    <input type="hidden" name="id"       value="<?= $row['id'] ?>">
-    <input type="hidden" name="price"    value="<?= $row['price'] ?>">
-    <input type="hidden" name="discount" value="<?= $row['discount'] ?>">
+    <input type="hidden" name="id"       value="<?= $product_id ?>">
+    <input type="hidden" name="price"    value="<?= $product_price ?>">
+    <input type="hidden" name="discount" value="<?= $product_discount ?>">
 
     <div class="row mx-1 my-4">
         <div class="col" align="center">
@@ -109,7 +100,7 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
             <table class="table table-sm table-borderless">
             <tr>
                 <td width="50%" valign="top" align="center">
-                    <img src="product/<?= $row['image1'] ?: 'nopic.png' ?>"
+                    <img src="product/<?= $product_image1 ?>"
                          width="80%"
                          class="img-thumbnail img-fluid mt-2"
                          style="cursor:zoom-in"
@@ -121,7 +112,7 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
                     <table width="100%" class="table table-sm table-borderless p-0 m-0" style="font-size:12px;">
                         <tr height="50">
                             <td colspan="2" align="center" style="font-size:20px; color:#222;">
-                                <?= $row['name'] ?>
+                                <?= $product_name ?>
                             </td>
                         </tr>
                         <tr height="35">
@@ -130,7 +121,7 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
                                     if ($row['icon_new'])  echo "<img src='images/i_new.gif'> ";
                                     if ($row['icon_hit'])  echo "<img src='images/i_hit.gif'> ";
                                     if ($row['icon_sale']) echo "<img src='images/i_sale.gif'>
-                                        <font color='red' size='3'>{$row['discount']}%</font>";
+                                        <font color='red' size='3'>{$product_discount}%</font>";
                                 ?>
                             </td>
                         </tr>
@@ -139,9 +130,9 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
 							<td width="30%" align="center">정가</td>
 							<td width="70%" align="left" style="font-size:15px;">
 								<?php if ($row['icon_sale']): ?>
-									<strike><?= number_format($row['price']) ?></strike>
+									<strike><?= number_format($product_price) ?></strike>
 								<?php else: ?>
-									<?= number_format($row['price']) ?>
+									<?= number_format($product_price) ?>
 								<?php endif; ?>
 							</td>
 						</tr>
@@ -150,7 +141,7 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
 						<tr height="35">
 							<td align="center">할인가</td>
 							<td align="left" style="font-size:15px;">
-								<?= number_format($row['price'] * (100 - $row['discount']) / 100) ?>
+								<?= number_format($product_sale_price) ?>
 							</td>
 						</tr>
 						<?php endif; ?>
@@ -160,24 +151,24 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
                         <!-- 옵션 카테고리별 select -->
                         <?php foreach ($categories as $cat): ?>
 <tr>
-    <td align="center"><?= $cat['name'] ?></td>
+    <td align="center"><?= htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8') ?></td>
     <td align="left">
-        <select name="opts<?= $cat['id'] ?>"
+        <select name="opts<?= (int)$cat['id'] ?>"
                 class="form-select form-select-sm mb-2"
                 style="width:90%; font-size:12px;">
             <option value="0" selected>선택하세요.</option>
             <?php
                 $rs_item = mysqli_query(
                     $db,
-                    "SELECT id, name 
-                       FROM opts 
+                    "SELECT id, name
+                       FROM opts
                       WHERE opt_id = " . (int)$cat['id'] . "
                       ORDER BY id"
                 );
                 while ($it = mysqli_fetch_assoc($rs_item)):
             ?>
-            <option value="<?= $it['id'] ?>">
-                <?= $it['name'] ?>
+            <option value="<?= (int)$it['id'] ?>">
+                <?= htmlspecialchars($it['name'], ENT_QUOTES, 'UTF-8') ?>
             </option>
             <?php endwhile; ?>
         </select>
@@ -208,7 +199,7 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
                                 <div class="d-inline-flex">
                                     <input type="text"
                                            name="prices"
-                                           value="<?= number_format($row['price'] * (100 - $row['discount']) / 100) ?>"
+                                           value="<?= number_format($product_sale_price) ?>"
                                            size="10"
                                            class="form-control form-control-sm"
                                            style="border:0;background:white;text-align:left;font-size:18px;"
@@ -253,8 +244,9 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
             $detailImgs[] = 'nopic.png';
         }
         foreach ($detailImgs as $img) {
-            echo "<img src='product/{$img}' 
-                      class='img-thumbnail mb-2' 
+            $safe_img = htmlspecialchars($img, ENT_QUOTES, 'UTF-8');
+            echo "<img src='product/{$safe_img}'
+                      class='img-thumbnail mb-2'
                       style='border:0; max-width:80%;'><br>";
         }
     ?>
@@ -265,10 +257,10 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
 <div id="modal-container">
   <div class="modal-background">
     <div class="modal">
-      <h2><?= $row['name'] ?></h2>
+      <h2><?= $product_name ?></h2>
       <button type="button" class="btn-close" id="modal-close"></button>
       <div class="modal-body text-center" style="position: relative; z-index: 9999;">
-        <img src="product/<?= $row['image1'] ?: 'nopic.png' ?>"
+        <img src="product/<?= $product_image1 ?>"
              class="zoom-in img-thumbnail
              style="max-width:100%;"
              id="modal-img">
@@ -277,7 +269,7 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
   </div>
 </div>
 
- 
+
 <script>
   // 모달 열기
   document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
@@ -307,6 +299,3 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
 
 
 <?php include "main_bottom.php"; ?>
-</div>
-</body>
-</html>
