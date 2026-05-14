@@ -130,6 +130,10 @@
 - `main_bottom.php` footer 영역에 남아 있던 일부 inline style을 `css/footer.css`로 분리했습니다.
 - DB/관리자 계정은 `config.php`가 있으면 우선 사용하고, 없으면 환경변수, 마지막으로 로컬 실습용 기본값 순서로 읽도록 정리했습니다.
 - 주문 저장 및 관리자 주요 Prepared Statement 구간에서 prepare 실패 처리를 보강했습니다.
+- 관리자 상품 목록에서 검색어와 상품 코드/상품명/분류/상태/이벤트 출력값 escaping을 보강했습니다.
+- 관리자 주요 변경 처리 파일의 입력값을 POST+CSRF 흐름에 맞춰 `$_POST` 기준으로 정리했습니다.
+- `juso/`, `sj/` 실습 보조 영역의 short_open_tag 의존성, 일부 SQL 오류 노출, 기본 입력 캐스팅/escaping을 최소 범위로 정리했습니다.
+- `scripts/check-php.sh`에 관리자 상품 목록, 주문/FAQ 삭제, juso/sj 삭제 처리 파일 문법 검사와 `$_REQUEST` 사용 점검 출력을 보강했습니다.
 - `db/shop62.sql`은 프로젝트 실행용 스키마/샘플/기존 데이터로 유지합니다. 대용량 파일일 수 있으므로 GitHub 웹 화면에서 직접 열기보다는 로컬 DB import 기준으로 사용하는 것을 권장합니다.
 
 ## 실행 방법

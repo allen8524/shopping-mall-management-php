@@ -23,9 +23,10 @@ $birthday = sprintf("%04d-%02d-%02d", $birthday1, $birthday2, $birthday3);
 $sql = "INSERT INTO member (uid, pwd, name, tel, zip, juso, email, birthday, gubun) 
         VALUES ('$uid', '$pwd','$name', '$tel', '$zip', '$juso', '$email', '$birthday', 0)";
 $result = mysqli_query($db, $sql);
-if (!$result) exit("에러 : " . mysqli_error($db));
+if (!$result) {
+    error_log('Member insert failed: ' . mysqli_error($db));
+    exit('회원 가입 처리 중 오류가 발생했습니다.');
+}
 
-var_dump($_REQUEST);  // 디버깅용
-
-
-echo("<script>location.href='member_joinend.php'</script>");
+header('Location: member_joinend.php');
+exit;

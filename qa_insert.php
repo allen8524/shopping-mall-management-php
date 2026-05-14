@@ -35,11 +35,16 @@ $c = mysqli_real_escape_string($db, $contents_clean);
 if ($pos1 === 0) {
     // └── 루트 새글
     $sql = "INSERT INTO qa (pos1, pos2, title, name, passwd, writeday, `count`, contents) VALUES (0, '', '$t', '$n', '$p', NOW(), 0, '$c')";
-    mysqli_query($db, $sql) or exit('DB 에러(INSERT 새글): ' . mysqli_error($db));
+    if (!mysqli_query($db, $sql)) {
+        error_log('QA root insert failed: ' . mysqli_error($db));
+        exit('게시글 등록 처리 중 오류가 발생했습니다.');
+    }
     // 삽입된 ID를 pos1에 업데이트
     $new_id = mysqli_insert_id($db);
-    mysqli_query($db, "UPDATE qa SET pos1 = $new_id WHERE id = $new_id")
-        or exit('DB 에러(UPDATE pos1): ' . mysqli_error($db));
+    if (!mysqli_query($db, "UPDATE qa SET pos1 = $new_id WHERE id = $new_id")) {
+        error_log('QA pos1 update failed: ' . mysqli_error($db));
+        exit('게시글 등록 처리 중 오류가 발생했습니다.');
+    }
 } else {
     // └── 답글: A, B, AA, AB...
     $depth      = mb_strlen($parent_pos2, 'UTF-8');
@@ -48,7 +53,11 @@ if ($pos1 === 0) {
     // 마지막 문자(max_ch) 조회
     $sql = "SELECT MAX(RIGHT(pos2,1)) AS max_ch FROM qa WHERE pos1 = $pos1 AND CHAR_LENGTH(pos2) = $next_len AND pos2 LIKE '{$prefix}%'
     ";
-    $res = mysqli_query($db, $sql) or exit('DB 에러(SELECT max_ch): ' . mysqli_error($db));
+    $res = mysqli_query($db, $sql);
+    if (!$res) {
+        error_log('QA reply position select failed: ' . mysqli_error($db));
+        exit('게시글 등록 처리 중 오류가 발생했습니다.');
+    }
     $row = mysqli_fetch_assoc($res);
     $last = $row['max_ch'];
     $next = $last ? chr(ord($last) + 1) : 'A';
@@ -56,7 +65,10 @@ if ($pos1 === 0) {
 
     // 답글 INSERT
     $sql = "INSERT INTO qa (pos1, pos2, title, name, passwd, writeday, `count`, contents) VALUES ($pos1, '$new_pos2', '$t', '$n', '$p', NOW(), 0, '$c')";
-    mysqli_query($db, $sql) or exit('DB 에러(INSERT 답글): ' . mysqli_error($db));
+    if (!mysqli_query($db, $sql)) {
+        error_log('QA reply insert failed: ' . mysqli_error($db));
+        exit('게시글 등록 처리 중 오류가 발생했습니다.');
+    }
 }
 
 // 5) 리스트로 리다이렉트

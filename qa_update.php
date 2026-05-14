@@ -46,7 +46,8 @@ $sql = "
      WHERE id       = $id
 ";
 if (!mysqli_query($db, $sql)) {
-    exit("DB 업데이트 에러: " . mysqli_error($db));
+    error_log('QA update failed: ' . mysqli_error($db));
+    exit('게시글 수정 처리 중 오류가 발생했습니다.');
 }
 
 // 5) 목록으로 리다이렉트 (검색/페이징 유지)
