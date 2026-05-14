@@ -2,52 +2,204 @@
 include "login_main_check.php";
 include "../common.php";
 
-$id       = $_REQUEST["id"];
-$menu     = $_REQUEST["menu"];
-$code     = $_REQUEST["code"];
-$name     = $_REQUEST["name"];
-$coname   = $_REQUEST["coname"];
-$price    = $_REQUEST["price"];
-$opt1     = $_REQUEST["opt1"];
-$opt2     = $_REQUEST["opt2"];
-$contents = $_REQUEST["contents"];
-$status   = $_REQUEST["status"];
-$icon_new  = isset($_REQUEST["icon_new"]) ? 1 : 0;
-$icon_hit  = isset($_REQUEST["icon_hit"]) ? 1 : 0;
-$icon_sale = isset($_REQUEST["icon_sale"]) ? 1 : 0;
-$discount  = $_REQUEST["discount"];
-$regday    = $_REQUEST["regday"];
+function clean_product_image_name($name) {
+    $name = trim((string)$name);
+    if ($name === '') {
+        return '';
+    }
 
-$image1 = $_REQUEST["imagename1"];
-$image2 = $_REQUEST["imagename2"];
-$image3 = $_REQUEST["imagename3"];
+    $baseName = basename($name);
+    if ($baseName !== $name) {
+        throw new Exception('잘못된 이미지 파일명입니다.');
+    }
 
-if (isset($_REQUEST["checkno1"]) && $image1) { unlink("../product/$image1"); $image1=""; }
-if (isset($_REQUEST["checkno2"]) && $image2) { unlink("../product/$image2"); $image2=""; }
-if (isset($_REQUEST["checkno3"]) && $image3) { unlink("../product/$image3"); $image3=""; }
-
-if ($_FILES["image1"]["error"] == 0) {
-	$image1 = $_FILES["image1"]["name"];
-	move_uploaded_file($_FILES["image1"]["tmp_name"], "../product/$image1");
-}
-if ($_FILES["image2"]["error"] == 0) {
-	$image2 = $_FILES["image2"]["name"];
-	move_uploaded_file($_FILES["image2"]["tmp_name"], "../product/$image2");
-}
-if ($_FILES["image3"]["error"] == 0) {
-	$image3 = $_FILES["image3"]["name"];
-	move_uploaded_file($_FILES["image3"]["tmp_name"], "../product/$image3");
+    return $baseName;
 }
 
-$sql = "update product set 
-	menu=$menu, code='$code', name='$name', coname='$coname', price=$price,
-	opt1=$opt1, opt2=$opt2, contents='$contents', status=$status,
-	icon_new=$icon_new, icon_hit=$icon_hit, icon_sale=$icon_sale,
-	discount=$discount, regday='$regday',
-	image1='$image1', image2='$image2', image3='$image3'
-	where id=$id";
+function product_image_path($name) {
+    $baseDir = realpath(__DIR__ . '/../product/');
+    if ($baseDir === false) {
+        throw new Exception('상품 이미지 폴더를 찾을 수 없습니다.');
+    }
 
-$result = mysqli_query($db, $sql);
-if (!$result) exit("에러: $sql");
+    $safeName = clean_product_image_name($name);
+    if ($safeName === '') {
+        return '';
+    }
 
-echo("<script>location.href='product.php'</script>");
+    $path = $baseDir . DIRECTORY_SEPARATOR . $safeName;
+    $dir = realpath(dirname($path));
+    if ($dir === false || strpos($dir, $baseDir) !== 0) {
+        throw new Exception('잘못된 이미지 경로입니다.');
+    }
+
+    return $path;
+}
+
+function upload_product_image($fileKey) {
+    $allowedExt = ['jpg', 'jpeg', 'png', 'gif'];
+
+    if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] === UPLOAD_ERR_NO_FILE) {
+        return '';
+    }
+
+    if ($_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
+        throw new Exception("업로드 오류: {$fileKey}");
+    }
+
+    $tmpPath = $_FILES[$fileKey]['tmp_name'];
+    if (!is_uploaded_file($tmpPath)) {
+        throw new Exception("업로드 파일 확인 실패: {$fileKey}");
+    }
+
+    $ext = strtolower(pathinfo($_FILES[$fileKey]['name'], PATHINFO_EXTENSION));
+    if (!in_array($ext, $allowedExt, true)) {
+        throw new Exception("허용되지 않는 파일 형식입니다: {$fileKey}");
+    }
+
+    $newName = uniqid('prd_', true) . '.' . $ext;
+    $dest = product_image_path($newName);
+
+    if (!move_uploaded_file($tmpPath, $dest)) {
+        throw new Exception("파일 저장 실패: {$fileKey}");
+    }
+
+    return $newName;
+}
+
+$id       = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+$menu     = isset($_POST['menu']) ? (int)$_POST['menu'] : null;
+$code     = isset($_POST['code']) ? trim($_POST['code']) : '';
+$name     = isset($_POST['name']) ? trim($_POST['name']) : '';
+$coname   = isset($_POST['coname']) ? trim($_POST['coname']) : '';
+$price    = isset($_POST['price']) ? (int)$_POST['price'] : null;
+$opt1     = isset($_POST['opt1']) ? (int)$_POST['opt1'] : 0;
+$opt2     = isset($_POST['opt2']) ? (int)$_POST['opt2'] : 0;
+$contents = isset($_POST['contents']) ? trim($_POST['contents']) : '';
+$status   = isset($_POST['status']) ? (int)$_POST['status'] : 1;
+$icon_new  = isset($_POST['icon_new']) ? 1 : 0;
+$icon_hit  = isset($_POST['icon_hit']) ? 1 : 0;
+$icon_sale = isset($_POST['icon_sale']) ? 1 : 0;
+$discount  = isset($_POST['discount']) ? (int)$_POST['discount'] : 0;
+$regday    = isset($_POST['regday']) ? trim($_POST['regday']) : '';
+
+$newImages = [];
+$deleteAfterCommit = [];
+$transactionStarted = false;
+
+try {
+    if ($id <= 0 || is_null($menu) || is_null($price) || $price < 0 || $code === '' || $name === '' || $regday === '') {
+        throw new Exception('필수 입력값이 누락되었거나 형식이 잘못되었습니다.');
+    }
+
+    $image1 = clean_product_image_name($_POST['imagename1'] ?? '');
+    $image2 = clean_product_image_name($_POST['imagename2'] ?? '');
+    $image3 = clean_product_image_name($_POST['imagename3'] ?? '');
+
+    $uploaded1 = upload_product_image('image1');
+    if ($uploaded1 !== '') $newImages[] = $uploaded1;
+    $uploaded2 = upload_product_image('image2');
+    if ($uploaded2 !== '') $newImages[] = $uploaded2;
+    $uploaded3 = upload_product_image('image3');
+    if ($uploaded3 !== '') $newImages[] = $uploaded3;
+
+    if ($uploaded1 !== '') {
+        if ($image1 !== '') $deleteAfterCommit[] = $image1;
+        $image1 = $uploaded1;
+    } elseif (isset($_POST['checkno1']) && $image1 !== '') {
+        $deleteAfterCommit[] = $image1;
+        $image1 = '';
+    }
+
+    if ($uploaded2 !== '') {
+        if ($image2 !== '') $deleteAfterCommit[] = $image2;
+        $image2 = $uploaded2;
+    } elseif (isset($_POST['checkno2']) && $image2 !== '') {
+        $deleteAfterCommit[] = $image2;
+        $image2 = '';
+    }
+
+    if ($uploaded3 !== '') {
+        if ($image3 !== '') $deleteAfterCommit[] = $image3;
+        $image3 = $uploaded3;
+    } elseif (isset($_POST['checkno3']) && $image3 !== '') {
+        $deleteAfterCommit[] = $image3;
+        $image3 = '';
+    }
+
+    if (!mysqli_begin_transaction($db)) {
+        throw new Exception('트랜잭션 시작 실패');
+    }
+    $transactionStarted = true;
+
+    $sql = "UPDATE product SET
+        menu = ?, code = ?, name = ?, coname = ?, price = ?,
+        opt1 = ?, opt2 = ?, contents = ?, status = ?,
+        icon_new = ?, icon_hit = ?, icon_sale = ?,
+        discount = ?, regday = ?, image1 = ?, image2 = ?, image3 = ?
+        WHERE id = ?";
+
+    $stmt = mysqli_prepare($db, $sql);
+    if (!$stmt) {
+        throw new Exception('상품 수정 준비 실패');
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        'isssiiisiiiiissssi',
+        $menu,
+        $code,
+        $name,
+        $coname,
+        $price,
+        $opt1,
+        $opt2,
+        $contents,
+        $status,
+        $icon_new,
+        $icon_hit,
+        $icon_sale,
+        $discount,
+        $regday,
+        $image1,
+        $image2,
+        $image3,
+        $id
+    );
+
+    if (!mysqli_stmt_execute($stmt)) {
+        throw new Exception('DB 수정 실패: ' . mysqli_stmt_error($stmt));
+    }
+    mysqli_stmt_close($stmt);
+
+    mysqli_commit($db);
+    $transactionStarted = false;
+
+    $finalImages = array_filter([$image1, $image2, $image3]);
+    foreach (array_unique($deleteAfterCommit) as $img) {
+        if (in_array($img, $finalImages, true)) {
+            continue;
+        }
+
+        $path = product_image_path($img);
+        if ($path !== '' && is_file($path)) {
+            unlink($path);
+        }
+    }
+
+    header('Location: product.php');
+    exit;
+} catch (Throwable $e) {
+    if ($transactionStarted) {
+        mysqli_rollback($db);
+    }
+
+    foreach ($newImages as $img) {
+        $path = product_image_path($img);
+        if ($path !== '' && is_file($path)) {
+            unlink($path);
+        }
+    }
+
+    exit('에러: ' . $e->getMessage());
+}
