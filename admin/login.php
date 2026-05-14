@@ -1,7 +1,8 @@
 <?php
+session_start();
 include "../common.php";
 // 이미 관리자 로그인 상태면 member.php로 리다이렉트
-if (isset($_COOKIE['cookie_admin']) && $_COOKIE['cookie_admin'] === 'yes') {
+if (!empty($_SESSION["admin_id"]) && !empty($_SESSION["admin_login"])) {
     header("Location: member.php");
     exit;
 }

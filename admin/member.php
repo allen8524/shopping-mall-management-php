@@ -3,21 +3,23 @@ include "login_main_check.php";   // 관리자 인증 체크
 include "../common.php";
 
 // 검색 조건 처리
-$text1 = $_REQUEST["text1"] ?? "";
-$sel1  = $_REQUEST["sel1"] ?? 1;
+$text1 = trim($_REQUEST["text1"] ?? "");
+$sel1  = (int)($_REQUEST["sel1"] ?? 1);
+$sel1 = ($sel1 === 2) ? 2 : 1;
+$text1_esc = mysqli_real_escape_string($db, $text1);
 
 // SQL 쿼리 조건 분기
 if ($sel1 == 1) {
-    $sql = "SELECT * FROM member WHERE name LIKE '%$text1%' ORDER BY name";
+    $sql = "SELECT * FROM member WHERE name LIKE '%$text1_esc%' ORDER BY name";
 } else {
-    $sql = "SELECT * FROM member WHERE uid LIKE '%$text1%' ORDER BY uid";
+    $sql = "SELECT * FROM member WHERE uid LIKE '%$text1_esc%' ORDER BY uid";
 }
 
 // 페이징 처리
-$args = "text1=$text1&sel1=$sel1";
+$args = http_build_query(["text1" => $text1, "sel1" => $sel1]);
 $result = mypagination($sql, $args, $count, $pagebar);
 
-if (!$result) exit("에러: $sql");
+if (!$result) exit("회원 목록을 조회할 수 없습니다.");
 ?>
 
 <!doctype html>

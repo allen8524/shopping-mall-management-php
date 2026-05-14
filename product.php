@@ -2,10 +2,18 @@
     include "main_top.php";
 
     // 1) product 정보
-    $id     = $_GET['id'] ?? 0;
-    $sql    = "SELECT * FROM product WHERE id = {$id}";
-    $result = mysqli_query($db, $sql);
-    $row    = mysqli_fetch_array($result);
+    $id = max(0, (int)($_GET['id'] ?? 0));
+    $stmt = mysqli_prepare($db, "SELECT * FROM product WHERE id = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_array($result);
+
+    if (!$row) {
+        echo "<div class='container my-5 text-center'><p>상품 정보를 찾을 수 없습니다.</p><a href='main.php' class='btn btn-sm btn-secondary'>메인으로</a></div>";
+        include "main_bottom.php";
+        exit;
+    }
 
     // 2) 옵션 카테고리 목록 (opt 테이블)
     $rs_cat = mysqli_query($db, "SELECT id, name FROM opt ORDER BY id");
@@ -163,7 +171,7 @@ if (form2.opts<?= $cat['id'] ?>.value == 0) {
                     $db,
                     "SELECT id, name 
                        FROM opts 
-                      WHERE opt_id = {$cat['id']}
+                      WHERE opt_id = " . (int)$cat['id'] . "
                       ORDER BY id"
                 );
                 while ($it = mysqli_fetch_assoc($rs_item)):
