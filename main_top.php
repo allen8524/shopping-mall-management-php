@@ -10,82 +10,8 @@
   <link href="css/weather.css" rel="stylesheet"> <!-- 날씨 전용 CSS -->
   <script src="js/jquery-3.7.1.min.js"></script>
   <script src="js/bootstrap.bundle.min.js"></script>
-<style>
-  .top-icon-menu {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 14px;
-    height: 50px;
-    padding: 0 16px;
-    background: #222;
-    overflow: visible;
-  }
+  <link href="css/header.css" rel="stylesheet">
 
-  .top-icon-menu a {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-  }
-
-  .top-icon-menu a img {
-    height: 24px;
-    width: 24px;
-    transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .top-icon-menu a.hover-left img {
-    transform: scale(1.2) rotate(-21deg);
-    filter: brightness(180%) saturate(150%);
-  }
-
-  .top-icon-menu a.hover-right img {
-    transform: scale(1.2) rotate(21deg);
-    filter: brightness(180%) saturate(150%);
-  }
-
-  .top-icon-menu img {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-  }
-
-  .top-icon-menu a:not(:last-child)::after {
-    content: "|";
-    color: #aaa;
-    font-size: 14px;
-    position: absolute;
-    right: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-.custom-tooltip {
-  position: absolute;
-  bottom: -100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
-  font-size: 14px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 100;
-  text-shadow: 0 0 1px #fff, 0 0 1px #fff, 0 0 1px #ffcc88;
-}
-
-
-  .top-icon-menu a:hover .custom-tooltip {
-    opacity: 1;
-  }
-</style>
 
 
 
@@ -140,7 +66,7 @@
   </a>
 
   <?php
-    include "common.php"; 
+    include_once "common.php";
     $cookie_id = $_COOKIE['cookie_id'] ?? '';
 
     if(!$cookie_id) {

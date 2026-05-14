@@ -2,31 +2,36 @@
 include "login_main_check.php";
 include "../common.php";
 
-$sel1 = $_REQUEST["sel1"] ?? 0;
-$sel2 = $_REQUEST["sel2"] ?? 0;
-$sel3 = $_REQUEST["sel3"] ?? 0;
-$sel4 = $_REQUEST["sel4"] ?? 1;
-$text1 = $_REQUEST["text1"] ?? "";
+$sel1 = (int)($_REQUEST["sel1"] ?? 0);
+$sel2 = (int)($_REQUEST["sel2"] ?? 0);
+$sel3 = (int)($_REQUEST["sel3"] ?? 0);
+$sel4 = (int)($_REQUEST["sel4"] ?? 1);
+$text1 = trim($_REQUEST["text1"] ?? "");
+$sel1 = ($sel1 >= 0 && $sel1 < $n_status) ? $sel1 : 0;
+$sel2 = ($sel2 >= 0 && $sel2 <= 3) ? $sel2 : 0;
+$sel3 = ($sel3 >= 0 && $sel3 < $n_menu) ? $sel3 : 0;
+$sel4 = ($sel4 === 2) ? 2 : 1;
+$text1_esc = mysqli_real_escape_string($db, $text1);
 
 $s = array(); $k = 0;
-if ($sel1 != 0) $s[$k++] = "status=$sel1";
+if ($sel1 != 0) $s[$k++] = "status=" . (int)$sel1;
 if ($sel2 == 1) $s[$k++] = "icon_new=1";
 if ($sel2 == 2) $s[$k++] = "icon_hit=1";
 if ($sel2 == 3) $s[$k++] = "icon_sale=1";
-if ($sel3 != 0) $s[$k++] = "menu=$sel3";
+if ($sel3 != 0) $s[$k++] = "menu=" . (int)$sel3;
 
-if ($text1) {
-	if ($sel4 == 1) $s[$k++] = "name like '%$text1%'";
-	else            $s[$k++] = "code like '%$text1%'";
+if ($text1 !== '') {
+	if ($sel4 == 1) $s[$k++] = "name like '%$text1_esc%'";
+	else            $s[$k++] = "code like '%$text1_esc%'";
 }
 
 $condition = implode(" and ", $s);
 if ($condition) $condition = "where " . $condition;
 
 $sql = "select * from product $condition order by code";
-$args = "sel1=$sel1&sel2=$sel2&sel3=$sel3&sel4=$sel4&text1=$text1";
+$args = http_build_query(["sel1" => $sel1, "sel2" => $sel2, "sel3" => $sel3, "sel4" => $sel4, "text1" => $text1]);
 $result = mypagination($sql, $args, $count, $pagebar);
-$page = $_REQUEST["page"] ?? 1;
+$page = max(1, (int)($_REQUEST["page"] ?? 1));
 ?>
 <!doctype html>
 <html lang="kr">
