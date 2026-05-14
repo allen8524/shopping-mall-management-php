@@ -76,9 +76,13 @@ if ($member_id === '') $member_id = '0';
 
 $order_id = '';
 $error_message = '';
+$transaction_started = false;
 
 try {
-    mysqli_begin_transaction($db);
+    if (!mysqli_begin_transaction($db)) {
+        throw new Exception("트랜잭션 시작 실패");
+    }
+    $transaction_started = true;
 
     // 주문번호 생성: 기존 yymmdd + 4자리 순번 형식 유지
     $prefix = date('ymd');
@@ -223,12 +227,15 @@ try {
     }
 
     mysqli_commit($db);
+    $transaction_started = false;
 
     // 성공 후에만 장바구니 쿠키 삭제
     setcookie("cart", "", time() - 3600, "/");
     setcookie("n_cart", "", time() - 3600, "/");
 } catch (Throwable $e) {
-    mysqli_rollback($db);
+    if ($transaction_started) {
+        mysqli_rollback($db);
+    }
     error_log($e->getMessage());
     $error_message = "주문 저장 중 오류가 발생했습니다. 장바구니를 확인한 뒤 다시 시도해 주세요.";
 }

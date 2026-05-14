@@ -94,6 +94,8 @@
 - 관리자 페이지 접근은 `$_SESSION["admin_id"]`, `$_SESSION["admin_login"]` 값을 기준으로 확인합니다.
 - 상품 상세 ID, 카테고리/정렬 값, 관리자 검색/주문 상태 변경 등 주요 입력값에 정수 캐스팅, 허용값 검증, 문자열 escape 또는 Prepared Statement를 일부 적용했습니다.
 - 주문 저장 시 장바구니 쿠키 값을 그대로 신뢰하지 않고 상품 ID/수량/옵션 ID를 서버에서 검증하며, 상품 가격은 DB에서 재조회합니다.
+- 상품 수정 처리에도 Prepared Statement, 필수값 검증, 이미지 업로드 확장자 검증과 안전한 파일명 저장을 적용했습니다.
+- 주문 처리 예외 상황에서는 트랜잭션 시작 여부를 확인한 뒤 rollback 하도록 안정성을 보강했습니다.
 - `header()`, `setcookie()`, `session_start()` 이전 출력 위험을 줄이기 위해 주요 PHP 전용 처리 파일의 마지막 닫는 태그와 trailing whitespace를 정리했습니다.
 
 실서비스 적용 시에는 다음 항목을 추가로 검토해야 합니다.
@@ -109,6 +111,7 @@
 - 관리자 인증을 쿠키 단독 인증에서 session 기반 인증으로 변경했습니다.
 - 주문 저장에 트랜잭션을 적용해 주문 마스터/상세 저장 정합성을 개선했습니다.
 - 입력값 검증과 SQL Injection 방어를 주요 위험 구간부터 보강했습니다.
+- `a.php`의 짧은 PHP 태그를 표준 `<?php` 태그로 정리해 PHP 설정 호환성을 높였습니다.
 - `main_top.php`의 큰 header 관련 inline CSS 블록을 `css/header.css`로 분리했습니다.
 - `main_bottom.php` footer 영역에 남아 있던 일부 inline style을 `css/footer.css`로 분리했습니다.
 - DB/관리자 계정은 `config.php`가 있으면 우선 사용하고, 없으면 환경변수, 마지막으로 로컬 실습용 기본값 순서로 읽도록 정리했습니다.
